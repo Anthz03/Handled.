@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useRef } from "react";
 import { Button } from "./Button";
 import { Sticker } from "./Sticker";
+import { DoodleArrow } from "./Doodle";
 import { softPin, usePinProgress } from "@/lib/usePinProgress";
 
 // three.js loads after the page is up; the laptop draws in once it arrives.
@@ -67,7 +68,7 @@ export function MacbookHero({ children }: { children: React.ReactNode }) {
       <p className="mt-5 max-w-md text-lg leading-relaxed text-steel">Free homepage preview for Metro Manila businesses. Pay if you like it.</p>
       <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
         <Button href="/start-project">Get my free preview</Button>
-        {!reduce && <p className="hidden text-sm text-steel sm:block">or scroll to see one</p>}
+        {!reduce && <p className="hidden items-center gap-2 text-sm font-semibold text-ink sm:flex"><DoodleArrow className="h-9 w-12 rotate-[70deg] animate-bob" />or scroll to watch one get built</p>}
       </div>
     </motion.div>
   );

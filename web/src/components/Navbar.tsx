@@ -51,7 +51,7 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           <Link
             href="/start-project"
-            className="group hidden items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-on-brand transition hover:bg-navy hover:shadow-lg hover:shadow-brand/30 active:scale-95 sm:inline-flex"
+            className="group hidden items-center gap-2 pop-sm rounded-full bg-signal px-5 py-2.5 text-sm font-bold text-ink transition ease-[var(--ease-bounce)] hover:-rotate-2 hover:-translate-y-0.5 active:scale-95 sm:inline-flex"
           >
             Free preview
           </Link>
@@ -85,7 +85,7 @@ export function Navbar() {
                   </Link>
                 </motion.div>
               ))}
-              <Link href="/start-project" className="mt-4 rounded-full bg-brand px-4 py-4 text-center text-base font-semibold text-on-brand">
+              <Link href="/start-project" className="pop-sm mt-4 rounded-full bg-signal px-4 py-4 text-center text-base font-bold text-ink">
                 FREE PREVIEW
               </Link>
             </div>

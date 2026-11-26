@@ -96,3 +96,42 @@
 
 **Verified:** typecheck, lint, and production build pass. The endpoint returns 400 for missing fields, a bad email, or bad JSON; 200 for honeypot submissions; and 503 without Resend credentials. In the browser, the home and pricing pages render, and at 375px the free-preview form shows the direct-contact fallback when sending is unavailable. Not yet tested: a real send through Resend.
 
+
+## 2026-11-27: Playful redesign ("sticker workbench")
+**Why:** the user liked the 3D models but felt the design looked too professional, and asked for something fun and engaging.
+
+**Done** (branch `feat/playful-design`; the 3D laptop and phone were not changed)
+- `globals.css`: `.pop`, `.pop-hover`, `.pop-sm`, `.tape-stripes`, `--pop-shadow`, `--ease-bounce`, wiggle/spin-slow/bob animations.
+- New: `components/TapeBand.tsx`, `components/Doodle.tsx`.
+- Restyled: Button (sticker buttons, no wrapping), Navbar CTA, ServiceCard, FounderCard, ProcessTimeline, PostCard, DemoBadge (dashed stamp), CTA, Footer (yellow wordmark, sticker button, fixed "Handled.." in the copyright), MacbookHero (hand-drawn arrow by "or scroll to watch one get built").
+- Homepage: tilted step cards joined by doodle arrows, outlined industry chips, caution tape band before the projects, price tags.
+
+**Bugs fixed**
+- `node_modules` was missing three.js, @react-three and lenis (listed in package.json, never installed), so the homepage failed to compile. `npm ci` fixed it.
+
+**Verified:** typecheck and lint pass. Screenshots checked at 1440px and 390px. Production build passes (checked 2026-11-27 before merging).
+
+## 2026-11-27: MacBook-style laptop, screen drift fix
+**Why:** the user reported that the sample site on the hero laptop slid off the screen (sticking out above the bezel and leaving a black band at the bottom), and asked for the laptop to look like a MacBook.
+
+**Cause:** the screen was a DOM page laid over the WebGL canvas with drei `<Html transform>` (CSS 3D). Its CSS projection can disagree with the WebGL drawing (browser zoom, pixel ratio, GPU), so the two drifted apart. It could not be reproduced in headless Chromium, but the design made it possible on any machine.
+
+**Done**
+- New `components/Macbook.tsx`: a MacBook-style laptop built from shapes (rounded aluminium slabs with bevelled edges, black glass bezel with notch and camera, black keyboard area with the MacBook layout including half-height function row and inverted-T arrows, speaker grilles, wide trackpad, hinge in the base, rubber feet). No maker's logo; the lid shows the "h." mark.
+- New `lib/sampleSite.ts`: paints the café sample site (and the lid logo) onto a canvas with the brand fonts. It becomes the screen's texture, so it is part of the model and cannot drift. The page scroll moves the texture window; the screen fades up from black as the lid opens.
+- `LaptopScene.tsx`: uses the new model and texture, adds a local light-panel environment for the aluminium sheen (no network fetch). Pose and scroll timeline unchanged.
+- Removed `components/SampleSite.tsx` (replaced by the canvas version). `public/models/laptop.glb` is no longer used but kept.
+
+**Verified:** typecheck and lint pass; screenshots at 1440x900 (closed, opening, open, scrolled, closing) and 390px.
+
+## 2026-11-27: Realistic matcha café on the laptop screen
+**Why:** the user asked for the screen content to look like a real website, imagined as a matcha café.
+
+**Done**
+- `lib/sampleSite.ts` rewritten: a made-up matcha café, "leaf & whisk", laid out like a real desktop site (announcement bar, nav with order button, hero with a painted table scene of an iced matcha latte, tea bowl and bamboo whisk in window light, bestsellers with painted drinks and a cheesecake and ₱ prices, a dark-green "our matcha" band with an overhead shot, a visit section with hours and a drawn map, footer). Everything is painted on canvas with a seeded random, so it looks the same on every load and downloads no images.
+- The footer says "A sample website made by Handled." The address uses a placeholder street ("24 Sample Street") so it doesn't point at a real place.
+- A fixed browser toolbar (window buttons, back/forward, address field "leafandwhisk.ph") sits across the top of the screen; the page scrolls under it, and the notch sits inside it.
+- New dependency: `@fontsource-variable/fraunces` (serif for the café site), imported only in the lazily loaded `LaptopScene` chunk.
+- Texture size is capped at 1.25x and by the GPU's max texture size.
+
+**Verified:** typecheck and lint pass; screenshots of the open laptop at the top, middle and end of the page scroll.

@@ -1,49 +1,20 @@
 "use client";
-import { Canvas, createPortal, useThree } from "@react-three/fiber";
-import { ContactShadows, Html, useGLTF } from "@react-three/drei";
-import { motion, MotionValue, useTransform } from "framer-motion";
-import { useEffect, useMemo, useRef } from "react";
-import { Color, MeshStandardMaterial, type Group, type Mesh, type Object3D } from "three";
-import { SampleSite } from "./SampleSite";
+import { Canvas, useThree } from "@react-three/fiber";
+import { ContactShadows, Environment, Lightformer } from "@react-three/drei";
+import { MotionValue } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { CanvasTexture, MeshBasicMaterial, PlaneGeometry, SRGBColorSpace, type Group } from "three";
+import { LAPTOP_W, Macbook, SCREEN } from "./Macbook";
+import { BROWSER_BAR_H, drawBrowserBar, drawLidLogo, drawSampleSite, loadSiteFonts, SITE_W } from "@/lib/sampleSite";
+// The sample café site on the screen uses a serif; only this lazily loaded chunk pulls it in
+import "@fontsource-variable/fraunces";
+import "@fontsource-variable/fraunces/wght-italic.css";
 
-// The Blender laptop (public/models/laptop.glb, from Documents/laptop-mockup), driven by the hero's scroll timeline.
-// Restyled flat and matte in the site's own colour tokens, like the CSS phone: no reflections, soft even light.
+// The MacBook-style laptop (Macbook.tsx), driven by the hero's scroll timeline. The sample site is painted onto the
+// screen as a texture, so it is part of the 3D model and stays exactly on the screen at any size, zoom or GPU.
 // Renders only when the scroll moves it (frameloop "demand").
 
-const MODEL = "/models/laptop.glb";
-// Screen mesh, measured from the model (model units): 0.2976 x 0.2062, corners 0.0035, centred 0.1106 from the hinge
-const SCREEN_W = 0.2976;
-const SCREEN_H = 0.2062;
-const SCREEN_R = 0.0035;
-const PX_W = 1600; // CSS width the sample site is laid out at (large, so it stays sharp when the screen fills the view)
 const clamp = (v: number) => Math.min(1, Math.max(0, v));
-
-// Blender material name → site colour token
-const FINISH: Record<string, string> = {
-  SpaceBlack_Aluminium: "--color-alu-200",
-  Trackpad: "--color-alu-300",
-  Rubber: "--color-alu-600",
-  Keyboard_Well: "--color-well",
-  Keycaps: "--color-key",
-  Display_Glass: "--color-bezel",
-  Screen: "--color-bezel",
-};
-
-function useFlatFinish(scene: Object3D) {
-  useEffect(() => {
-    const css = getComputedStyle(document.documentElement);
-    const made = new Map<string, MeshStandardMaterial>();
-    scene.traverse((o) => {
-      const mesh = o as Mesh;
-      if (!mesh.isMesh) return;
-      const name = (mesh.material as { name?: string }).name ?? "";
-      const token = FINISH[name] ?? "--color-alu-200";
-      if (!made.has(token)) made.set(token, new MeshStandardMaterial({ color: new Color(css.getPropertyValue(token).trim()), metalness: 0, roughness: 0.85 }));
-      mesh.material = made.get(token)!;
-    });
-    return () => made.forEach((m) => m.dispose());
-  }, [scene]);
-}
 
 // The laptop moves between three poses, all drawn by this one renderer so size, place and lid change in the same frame:
 //   start: closed, tilted away, under the headline · open: facing you, the screen covering the view · rest: closed,
@@ -56,7 +27,6 @@ const CAM_Y = 0.35;
 // R3F aims the default camera at the origin, so the middle of the view is y = 0 at the laptop
 const VIEW_H = 2 * Math.hypot(CAM_Z, CAM_Y) * Math.tan((14 * Math.PI) / 180); // visible height at the laptop (fov 28)
 const MODEL_SCALE = 4.4;
-const LAPTOP_W = 0.312; // model width
 // Open and facing you, the whole laptop (lid top to front edge) is about this tall for its width
 const OPEN_ASPECT = 1.18;
 const OPEN_GROW = 1.08; // open: this much larger than "the whole laptop just fits"
@@ -66,31 +36,80 @@ const OPEN_NEAR = 1.17; // the front edge is nearer the camera, so the open lapt
 const CLOSED_Y = 0.3;
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
-function Laptop({ lid, toOpen, toRest, siteY, siteEnd, still }: Drive & { siteY: MotionValue<string> }) {
-  const { scene } = useGLTF(MODEL);
-  useFlatFinish(scene);
+function Laptop({ lid, toOpen, toRest, site, siteEnd, still }: Drive & { site: MotionValue<number> }) {
   const invalidate = useThree((s) => s.invalidate);
   const size = useThree((s) => s.size);
+  const gl = useThree((s) => s.gl);
   const rig = useRef<Group>(null);
-  const screenRef = useRef<HTMLDivElement>(null);
-  const pivot = useMemo(() => scene.getObjectByName("LidPivot") as Object3D, [scene]);
+  const pivot = useRef<Group>(null);
+  const [siteTex, setSiteTex] = useState<CanvasTexture | null>(null);
+  const [logoTex, setLogoTex] = useState<CanvasTexture | null>(null);
+  const [barTex, setBarTex] = useState<CanvasTexture | null>(null);
 
-  // The Html overlays (screen, logo) mount a moment after the first render; with frameloop "demand" nothing redraws
-  // until the scroll moves, so redraw a few times while they settle in
+  // Paint the sample site and the lid logo once the brand fonts are ready
   useEffect(() => {
-    const id = setInterval(invalidate, 100);
-    const stop = setTimeout(() => clearInterval(id), 1200);
-    return () => { clearInterval(id); clearTimeout(stop); };
-  }, [invalidate]);
+    let live = true;
+    let made: CanvasTexture[] = [];
+    loadSiteFonts().then(() => {
+      if (!live) return;
+      const siteCanvas = drawSampleSite(gl.capabilities.maxTextureSize);
+      const t = new CanvasTexture(siteCanvas);
+      t.colorSpace = SRGBColorSpace;
+      t.anisotropy = gl.capabilities.getMaxAnisotropy();
+      // Show one screen's worth of the page under the browser bar; the scroll moves the window down it
+      const screenPx = (SITE_W * SCREEN.h) / SCREEN.w - BROWSER_BAR_H;
+      t.repeat.set(1, Math.min(1, (screenPx / SITE_W) * (siteCanvas.width / siteCanvas.height)));
+      t.offset.set(0, 1 - t.repeat.y);
+      siteEnd.set(1 - t.repeat.y);
+      const l = new CanvasTexture(drawLidLogo());
+      l.colorSpace = SRGBColorSpace;
+      const b = new CanvasTexture(drawBrowserBar());
+      b.colorSpace = SRGBColorSpace;
+      b.anisotropy = t.anisotropy;
+      made = [t, l, b];
+      setSiteTex(t);
+      setLogoTex(l);
+      setBarTex(b);
+    });
+    return () => { live = false; made.forEach((t) => t.dispose()); };
+  }, [gl, siteEnd]);
 
-  // How far the sample site scrolls: 1 - screen height / site height. The screen only exists once drei has
-  // placed the Html, so measure on the first frame that finds it, and again after a resize.
-  const measured = useRef(false);
-  useEffect(() => {
-    const reset = () => { measured.current = false; };
-    window.addEventListener("resize", reset);
-    return () => window.removeEventListener("resize", reset);
+  // The screen: the browser bar along the top, the page below it. Both face the keyboard when closed, the viewer
+  // when open.
+  const screen = useMemo(() => {
+    const barH = (SCREEN.h * BROWSER_BAR_H * SCREEN.w) / (SITE_W * SCREEN.h);
+    const page = new PlaneGeometry(SCREEN.w, SCREEN.h - barH);
+    page.rotateX(Math.PI / 2);
+    page.translate(0, 0, -barH / 2);
+    const bar = new PlaneGeometry(SCREEN.w, barH);
+    bar.rotateX(Math.PI / 2);
+    bar.translate(0, 0, SCREEN.h / 2 - barH / 2);
+    return {
+      geo: page,
+      barGeo: bar,
+      mat: new MeshBasicMaterial({ color: "#000", toneMapped: false }),
+      barMat: new MeshBasicMaterial({ color: "#000", toneMapped: false }),
+    };
   }, []);
+  useEffect(() => () => { screen.geo.dispose(); screen.barGeo.dispose(); screen.mat.dispose(); screen.barMat.dispose(); }, [screen]);
+  useEffect(() => {
+    screen.mat.map = siteTex;
+    screen.mat.needsUpdate = true;
+    screen.barMat.map = barTex;
+    screen.barMat.needsUpdate = true;
+    invalidate();
+  }, [siteTex, barTex, screen, invalidate]);
+
+  // Scroll the page on the screen
+  useEffect(() => {
+    if (!siteTex) return;
+    const update = () => {
+      siteTex.offset.y = 1 - siteTex.repeat.y - clamp(site.get()) * (1 - siteTex.repeat.y);
+      invalidate();
+    };
+    update();
+    return site.on("change", update);
+  }, [site, siteTex, invalidate]);
 
   useEffect(() => {
     const aspect = size.width / size.height;
@@ -111,68 +130,53 @@ function Laptop({ lid, toOpen, toRest, siteY, siteEnd, still }: Drive & { siteY:
     };
 
     const apply = () => {
-      const screen = screenRef.current;
-      const site = screen?.firstElementChild as HTMLElement | null;
-      if (!measured.current && screen && site?.offsetHeight) {
-        siteEnd.set(Math.max(0, 1 - screen.offsetHeight / site.offsetHeight));
-        measured.current = true;
-      }
       const open = lid.get();
       const u = still ? 1 : toOpen.get();
       const v = still ? 0 : toRest.get();
       // Size and height follow u² so the laptop turns to face you first and grows mostly after
       const pose = (k: "rx" | "ry" | "s" | "x" | "y") => lerp(lerp(poses.start[k], poses.open[k], k === "s" || k === "y" ? u * u : u), poses.rest[k], v);
-      pivot.rotation.set(-1.83 * open, 0, 0); // closed flat → about 105° open, like the Blender pose
+      pivot.current?.rotation.set(-1.83 * open, 0, 0); // closed flat → about 105° open
       if (rig.current) {
         rig.current.rotation.set(pose("rx"), pose("ry"), 0);
         rig.current.scale.setScalar(MODEL_SCALE * pose("s"));
         rig.current.position.set(pose("x"), pose("y"), 0);
       }
-      if (screen) screen.style.opacity = String(clamp((open - 0.35) / 0.3));
+      // The screen wakes up as the lid opens
+      const glow = clamp((open - 0.35) / 0.3);
+      screen.mat.color.setScalar(glow);
+      screen.barMat.color.setScalar(glow);
       invalidate();
     };
     apply();
     const offs = [lid, toOpen, toRest].map((m) => m.on("change", apply));
     return () => offs.forEach((off) => off());
-  }, [lid, toOpen, toRest, still, size, pivot, invalidate, siteEnd]);
+  }, [lid, toOpen, toRest, still, size, invalidate, screen]);
 
   return (
     <group ref={rig} scale={MODEL_SCALE}>
-      <primitive object={scene} />
+      <Macbook ref={pivot} logo={logoTex}>
+        <mesh geometry={screen.geo} material={screen.mat} position={[0, -0.0001, SCREEN.z]} />
+        <mesh geometry={screen.barGeo} material={screen.barMat} position={[0, -0.0001, SCREEN.z]} />
+      </Macbook>
       <ContactShadows position={[0, -0.001, 0]} scale={0.6} blur={2.6} opacity={0.22} far={0.2} resolution={256} frames={1} />
-      {/* The sample site sits on the Screen mesh, inside the lid pivot so it opens with the lid */}
-      {createPortal(
-        <Html transform distanceFactor={(400 * SCREEN_W) / PX_W} position={[0, -0.0006, 0.1106]} rotation={[Math.PI / 2, 0, 0]} zIndexRange={[5, 0]}>
-          <div ref={screenRef} className="overflow-hidden bg-paper [backface-visibility:hidden]" style={{ width: PX_W, height: (PX_W * SCREEN_H) / SCREEN_W, borderRadius: (PX_W * SCREEN_R) / SCREEN_W, fontSize: 24.8, opacity: 0 }}>
-            <motion.div data-site style={{ y: siteY }}><SampleSite /></motion.div>
-          </div>
-        </Html>,
-        pivot,
-      )}
-      {/* The "h." logo on the back of the lid: facing up when closed and reading from the front, hidden when open */}
-      {createPortal(
-        <Html transform distanceFactor={0.4} position={[0, 0.0049, 0.1106]} rotation={[-Math.PI / 2, 0, 0]} zIndexRange={[4, 0]}>
-          <span className="block select-none font-display text-[60px] font-extrabold leading-none text-alu-500 [backface-visibility:hidden]" aria-hidden="true">
-            h<span className="text-signal">.</span>
-          </span>
-        </Html>,
-        pivot,
-      )}
     </group>
   );
 }
 
 // site: 0 → 1 how far the sample site has scrolled
-export default function LaptopScene({ site, ...drive }: Drive & { site: MotionValue<number> }) {
-  const siteY = useTransform(() => `${-site.get() * drive.siteEnd.get() * 100}%`);
+export default function LaptopScene(props: Drive & { site: MotionValue<number> }) {
   return (
     <Canvas frameloop="demand" dpr={[1, 1.75]} camera={{ fov: 28, position: [0, CAM_Y, CAM_Z] }} gl={{ alpha: true, antialias: true }} aria-hidden="true">
-      {/* Soft, even light: enough to read the form, no highlights or coloured rims */}
-      <ambientLight intensity={1.9} />
-      <directionalLight position={[1, 3, 4]} intensity={1.1} />
-      <Laptop {...drive} siteY={siteY} />
+      {/* Soft studio light, plus a few light panels for the aluminium to reflect */}
+      <ambientLight intensity={0.9} />
+      <directionalLight position={[1, 3, 4]} intensity={1.4} />
+      <Environment resolution={128} frames={1}>
+        <Lightformer intensity={1.3} position={[0, 4, 2]} scale={[8, 3, 1]} />
+        <Lightformer intensity={1.2} position={[-4, 1, 2]} scale={[3, 6, 1]} />
+        <Lightformer intensity={1.2} position={[4, 1, 2]} scale={[3, 6, 1]} />
+        <Lightformer intensity={0.6} position={[0, -3, 2]} scale={[8, 2, 1]} />
+      </Environment>
+      <Laptop {...props} />
     </Canvas>
   );
 }
-
-useGLTF.preload(MODEL);

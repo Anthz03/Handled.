@@ -19,8 +19,24 @@
   /* Accent: charcoal on light surfaces, sand on dark (.on-dark) surfaces */
   --accent: #1f2426;
   --on-accent: #eef1f2;
+  /* Playful "sticker" pieces: hard offset shadow; charcoal on light, sand on dark */
+  --pop-shadow: #1f2426;
+  --ease-bounce: cubic-bezier(.34, 1.56, .64, 1);
 }
-@utility on-dark { --accent: #d1bfa8; --on-accent: #1f2426; }
+@utility on-dark { --accent: #d1bfa8; --on-accent: #1f2426; --pop-shadow: #d1bfa8; }
+
+/* Sticker pieces: a charcoal outline and a hard shadow. Tilt them with rotate-* and straighten with hover:rotate-0. */
+@layer components {
+  .pop {
+    border: 2px solid var(--color-ink);
+    box-shadow: 5px 5px 0 var(--pop-shadow);
+    transition: rotate .45s var(--ease-bounce), translate .45s var(--ease-bounce), box-shadow .45s var(--ease-bounce), background-color .3s, color .3s;
+  }
+  .pop-hover:hover, .group:hover > .pop-hover-child { translate: -3px -3px; box-shadow: 9px 9px 0 var(--pop-shadow); }
+  .pop-sm { border: 2px solid var(--color-ink); box-shadow: 3px 3px 0 var(--pop-shadow); }
+  /* Caution tape */
+  .tape-stripes { background: repeating-linear-gradient(-45deg, var(--color-signal) 0 18px, var(--color-ink) 18px 36px); }
+}
 
 @theme inline {
   --color-*: initial;
@@ -61,6 +77,11 @@
   --animate-pulse-dot: pulse-dot 2s ease-in-out infinite;
   @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
   @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(.75); } }
+  --animate-wiggle: wiggle .5s ease-in-out;
+  @keyframes wiggle { 0%, 100% { rotate: 0deg; } 25% { rotate: -12deg; } 50% { rotate: 10deg; } 75% { rotate: -5deg; } }
+  --animate-spin-slow: spin 18s linear infinite;
+  --animate-bob: bob 2.4s ease-in-out infinite;
+  @keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 6px; } }
 }
 
 html, body { overflow-x: clip; }
@@ -105,5 +126,6 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-stretch: 112%; letter-sp
 :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 4px; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .animate-marquee, .animate-pulse-dot { animation: none; }
+  .animate-marquee, .animate-pulse-dot, .animate-wiggle, .animate-spin-slow, .animate-bob, .group:hover .group-hover\:animate-wiggle { animation: none; }
+  .pop { transition: none; }
 }

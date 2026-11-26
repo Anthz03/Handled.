@@ -23,17 +23,20 @@ export function Footer() {
               { href: site.socials.instagram, label: "Instagram" },
             ]}
           />
-          <Link href="/start-project" className="mt-8 inline-flex rounded-full bg-brand px-5 py-3 text-sm font-semibold text-on-brand transition-colors hover:bg-white hover:text-navy">
+          <Link href="/start-project" className="pop-sm mt-8 inline-flex rounded-full bg-signal px-5 py-3 text-sm font-bold text-ink transition ease-[var(--ease-bounce)] hover:-rotate-2 hover:-translate-y-0.5">
             FREE PREVIEW
           </Link>
         </div>
       </div>
-      <p aria-hidden="true" className="pointer-events-none mt-16 select-none text-center font-display text-[14.5vw] font-extrabold leading-[0.75] tracking-[-0.06em] text-white/[0.04]">
-        {site.shortName.toUpperCase()}
+      {/* Giant wordmark; each letter hops when the cursor passes over it */}
+      <p aria-hidden="true" className="mt-16 flex select-none justify-center font-display text-[16vw] font-extrabold leading-[0.8] tracking-[-0.05em] text-signal">
+        {[...site.shortName.toLowerCase(), "."].map((ch, i) => (
+          <span key={i} className={`inline-block transition-transform duration-300 ease-[var(--ease-bounce)] hover:-translate-y-[0.12em] hover:-rotate-6 ${ch === "." ? "text-sand" : ""}`}>{ch}</span>
+        ))}
       </p>
       <div className="relative border-t border-white/10">
         <div className="container-x flex flex-col gap-3 py-6 text-xs sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {site.name.replace(/\.$/, "")}. All rights reserved.</p>
           <div className="flex gap-5">
             <Link href="/privacy" className="hover:text-white">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-white">Terms and Conditions</Link>

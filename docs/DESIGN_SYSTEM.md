@@ -41,6 +41,17 @@ Four rounded squares in a 2×2 grid forming a "C": the top-left block and connec
 - Easing: `[0.22, 1, 0.36, 1]`, 0.5–1s. Everything is disabled under `prefers-reduced-motion`.
 - Page transitions are in `app/template.tsx`.
 
+## Playful layer: "sticker workbench" (2026-11-27)
+The user asked for a more fun, less corporate feel while keeping the 3D laptop and phone. Pieces now look like stickers on a workbench:
+- `.pop` (globals.css): 2px charcoal outline plus a hard 5px offset shadow (`--pop-shadow`: charcoal on light, sand inside `on-dark`). `.pop-hover` lifts it and grows the shadow. `.pop-sm` is the small version for buttons and chips.
+- Tilt pieces with `rotate-*` and straighten them on hover with `hover:rotate-0`; the bounce easing is `--ease-bounce`.
+- Caution yellow (`signal`, #FFB627) is now used as a surface (service cards, price tag, CTA block, step numbers, primary buttons), alternating with sand and off-white.
+- Components: `TapeBand` (scrolling caution tape), `Doodle` (`DoodleArrow`, hand-drawn arrow). Service cards cycle colour and tilt by index (`i` prop), founder cards are taped polaroids (`i` prop), prices are hanging tags, process steps are yellow round badges with tilted cards, the CTA is yellow with a spinning ₱0 sticker, and the footer wordmark is a big yellow "handled." whose letters hop on hover.
+- New animations: `animate-wiggle` (icons on hover), `animate-spin-slow` (sticker), `animate-bob` (hero arrow). All are off under reduced motion.
+
+## Hero laptop
+MacBook-style, built in code (`components/Macbook.tsx`); dimensions and part colours are constants at the top of that file. The screen shows a browser toolbar and, under it, `lib/sampleSite.ts`: a canvas painting of a made-up matcha café site ("leaf & whisk") with its own palette (cream, tea greens, wood) and the Fraunces serif. Edit that file to change what's on the screen. The Fraunces font is for this sample only, not for Handled's own pages.
+
 ## Conventions
 - Every concept project shows the **Concept project** badge (accent tint).
 - Eyebrow label above each section heading.

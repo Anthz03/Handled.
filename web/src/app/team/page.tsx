@@ -19,7 +19,7 @@ export default function Team() {
       <section className="container-x py-24">
         <SectionHeading title="Two Benildeans who love technology." body="We started Handled on a spontaneous decision because we wanted to use technology to solve real-world problems." />
         <Stagger className="mt-14 grid gap-6 lg:grid-cols-2">
-          {founders.map((f, i) => <StaggerItem key={i}><FounderCard f={f} full /></StaggerItem>)}
+          {founders.map((f, i) => <StaggerItem key={i}><FounderCard f={f} i={i} full /></StaggerItem>)}
         </Stagger>
       </section>
       <section className="container-x pb-4">

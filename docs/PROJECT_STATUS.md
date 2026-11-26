@@ -1,7 +1,7 @@
 # Project Status
 
 **Current phase:** Phase 1 complete, rebranded to Handled. (2026-11-26). Simplified Phase 2 contact form built; needs Resend credentials to send.
-**Last updated:** 2026-11-26
+**Last updated:** 2026-11-27 (playful redesign on branch `feat/playful-design`, not merged yet)
 
 ## Completed
 - Next.js app scaffolded in `web/`
