@@ -21,7 +21,7 @@ const details = [
 export default function Process() {
   return (
     <>
-      <PageHeader eyebrow="Our process" title="A clear path from idea to launch." body="Five steps that keep every project organized, transparent, and on track." />
+      <PageHeader title="A clear path from idea to launch." body="Five steps that keep every project organized, transparent, and on track." />
       <section className="container-x py-24">
         <ProcessTimeline details={details} />
       </section>
@@ -34,7 +34,7 @@ export default function Process() {
           </Reveal>
           <div className="mt-10 overflow-x-auto rounded-3xl bg-white p-8">
             <div className="min-w-[560px]">
-              <div className="grid grid-cols-8 gap-1 font-mono text-[11px] text-slate">
+              <div className="grid grid-cols-8 gap-1 text-xs text-slate">
                 {Array.from({ length: 8 }).map((_, i) => <span key={i}>Week {i + 1}</span>)}
               </div>
               {[

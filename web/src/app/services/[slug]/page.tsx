@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Check, Minus } from "lucide-react";
-import { Eyebrow } from "@/components/Section";
 import { Parallax, Reveal, SplitWords, Stagger, StaggerItem } from "@/components/Motion";
 import { Button } from "@/components/Button";
 import { ServiceIcon } from "@/components/ServiceIcon";
@@ -23,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 function List({ title, items, icon = "check" }: { title: string; items: string[]; icon?: "check" | "minus" }) {
   const Icon = icon === "check" ? Check : Minus;
   return (
-    <div className="h-full rounded-3xl bg-soft p-8 transition-all duration-500 hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-navy/5">
+    <div className="h-full rounded-3xl bg-soft p-8 transition duration-500 hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-navy/5">
       <h2 className="font-display text-sm font-bold text-brand">{title}</h2>
       <ul className="mt-4 space-y-3">
         {items.map((i) => (
@@ -45,19 +44,17 @@ export default async function ServiceDetail({ params }: Props) {
     <>
       <section className="relative overflow-hidden bg-navy text-white on-dark">
         <div className="grid-bg absolute inset-0 [mask-image:radial-gradient(ellipse_at_70%_0%,black,transparent_70%)]" />
-        <div className="absolute -right-32 -top-40 h-[28rem] w-[28rem] rounded-full bg-brand/30 blur-[120px]" />
         <Parallax speed={0.5} className="absolute -bottom-10 right-[6%] hidden text-white/[0.06] lg:block">
           <ServiceIcon icon={s.icon} className="h-72 w-72" />
         </Parallax>
         <div className="container-x relative py-20 md:py-28">
           <div className="flex items-center gap-4">
             <span className="grid h-12 w-12 place-items-center rounded-2xl bg-brand text-on-brand"><ServiceIcon icon={s.icon} /></span>
-            <Eyebrow light>Service {s.number}</Eyebrow>
           </div>
           <h1 className="display-xl mt-6 max-w-4xl"><SplitWords text={s.title} /></h1>
           <Reveal delay={0.3}>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/70">{s.overview}</p>
-            <div className="mt-10"><Button href={`/start-project?service=${s.slug}`} arrow>Request this service</Button></div>
+            <div className="mt-10"><Button href={`/start-project?service=${s.slug}`}>Request this service</Button></div>
           </Reveal>
         </div>
       </section>

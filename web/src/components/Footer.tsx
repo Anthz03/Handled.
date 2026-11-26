@@ -52,7 +52,7 @@ function FooterCol({ title, links }: { title: string; links: { href: string; lab
         {links.map((l) => (
           <li key={l.label}>
             <Link href={l.href} className="group inline-flex items-center gap-2 transition-colors hover:text-white">
-              <span className="h-px w-0 bg-brand transition-all duration-300 group-hover:w-3" />
+              <span className="h-px w-3 origin-left scale-x-0 bg-brand transition-transform duration-300 group-hover:scale-x-100" />
               {l.label}
             </Link>
           </li>

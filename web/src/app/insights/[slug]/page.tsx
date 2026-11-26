@@ -32,9 +32,9 @@ export default async function Article({ params }: Props) {
           <Link href="/insights" className="group inline-flex items-center gap-1.5 text-sm font-medium text-white/60 hover:text-white">
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" /> All insights
           </Link>
-          <p className="mt-8 font-mono text-xs uppercase tracking-widest text-brand">{p.category}</p>
+          <p className="mt-8 text-sm font-semibold text-brand">{p.category}</p>
           <h1 className="mt-4 text-4xl font-extrabold leading-[1.05] tracking-tight md:text-6xl"><SplitWords text={p.title} /></h1>
-          <p className="mt-6 font-mono text-xs text-white/60">By {postAuthor} · <time dateTime={p.date}>{formatDate(p.date)}</time></p>
+          <p className="mt-6 text-sm text-white/60">By {postAuthor}, <time dateTime={p.date}>{formatDate(p.date)}</time></p>
         </div>
       </header>
       <article className="container-x max-w-3xl! pb-14">
@@ -54,7 +54,7 @@ export default async function Article({ params }: Props) {
             <h2 className="mt-2 text-2xl font-bold">{service.title}</h2>
             <p className="mt-2 text-white/80">{service.summary}</p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Button href={`/start-project?service=${service.slug}`} variant="light" arrow>Start a project</Button>
+              <Button href={`/start-project?service=${service.slug}`} variant="light">Start a project</Button>
               <Link href={`/services/${service.slug}`} className="inline-flex items-center px-2 text-sm font-semibold text-white/80 hover:text-white">Learn more</Link>
             </div>
           </div>

@@ -21,7 +21,7 @@ export function CTA({
           <h2 className="display-lg mx-auto max-w-3xl text-navy">{title}</h2>
           <p className="mx-auto mt-5 max-w-xl text-lg text-navy">{body}</p>
           <div className="mt-10">
-            <Button href="/start-project" arrow>{label}</Button>
+            <Button href="/start-project">{label}</Button>
           </div>
         </Reveal>
       </div>

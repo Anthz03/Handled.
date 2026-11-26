@@ -22,7 +22,7 @@ export default async function StartProject({ searchParams }: { searchParams: Pro
 
   return (
     <>
-      <PageHeader eyebrow="Free preview" title="See your new website before you pay." body="Tell us about your business. We'll design your homepage for free and send it within 1–2 business days." />
+      <PageHeader title="See your new website before you pay." body="Tell us about your business. We'll design your homepage for free and send it within 1–2 business days." />
       <section className="container-x relative grid gap-6 py-20 lg:grid-cols-[1.3fr_1fr]">
         <ContactForm preview topic={service?.title ?? ""} />
         <div className="self-start rounded-[2rem] bg-navy p-8 text-white md:p-12 on-dark">

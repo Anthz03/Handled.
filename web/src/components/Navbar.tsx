@@ -22,15 +22,15 @@ export function Navbar() {
   });
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
-  const dark = !scrolled && !open; // over the navy page tops
+  const dark = !scrolled && !open && pathname !== "/"; // over the navy page tops (the home hero is light)
 
   return (
     <motion.header
       animate={{ y: hidden ? "-100%" : "0%" }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className={`sticky top-0 z-50 transition-colors duration-300 ${dark ? "bg-navy on-dark" : "bg-white/90 shadow-[0_1px_0_rgba(16,29,53,0.08)] backdrop-blur-md"}`}
+      className={`sticky top-0 z-50 transition-colors duration-300 ${dark ? "bg-navy on-dark" : "bg-white border-b border-navy/10"}`}
     >
-      <div className={`container-x flex items-center justify-between gap-6 transition-[height] duration-300 ${scrolled ? "h-16" : "h-20"}`}>
+      <div className={`container-x flex items-center justify-between gap-6 h-16`}>
         <Logo light={dark} />
         <nav className="hidden items-center gap-1 xl:flex" aria-label="Main">
           {nav.slice(1).map((n) => (
@@ -51,9 +51,9 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           <Link
             href="/start-project"
-            className="group hidden items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-on-brand transition-all hover:bg-navy hover:shadow-lg hover:shadow-brand/30 active:scale-95 sm:inline-flex"
+            className="group hidden items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-on-brand transition hover:bg-navy hover:shadow-lg hover:shadow-brand/30 active:scale-95 sm:inline-flex"
           >
-            <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-white" /> FREE PREVIEW
+            Free preview
           </Link>
           <button
             className={`grid h-11 w-11 place-items-center rounded-full border transition-colors xl:hidden ${dark ? "border-white/20 text-white" : "border-slate/20 text-navy"}`}

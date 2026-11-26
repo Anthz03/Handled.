@@ -18,7 +18,7 @@ export function PostCover({ p, className = "" }: { p: Post; className?: string }
     <div className={`relative overflow-hidden ${m.bg} ${className}`}>
       <div className="grid-bg absolute inset-0" />
       <svg className="absolute inset-0 h-full w-full transition-transform duration-700 group-hover:scale-110" aria-hidden="true">{m.shape}</svg>
-      <span className="absolute bottom-4 left-4 rounded-full bg-white px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-navy">{p.category}</span>
+      <span className="absolute bottom-4 left-4 rounded-full bg-white px-3 py-1 text-xs font-semibold text-navy">{p.category}</span>
     </div>
   );
 }
@@ -28,7 +28,7 @@ export function PostCard({ p }: { p: Post }) {
     <Link href={`/insights/${p.slug}`} className="group flex h-full flex-col">
       <PostCover p={p} className="aspect-[16/10] rounded-3xl" />
       <div className="flex flex-1 flex-col pt-5">
-        <p className="font-mono text-xs text-slate">{formatDate(p.date)} · {postAuthor}</p>
+        <p className="text-sm text-slate">{formatDate(p.date)}, by {postAuthor}</p>
         <h3 className="mt-2 text-xl font-extrabold leading-snug text-navy transition-colors group-hover:text-brand">{p.title}</h3>
         <p className="mt-2 leading-relaxed text-slate">{p.excerpt}</p>
       </div>

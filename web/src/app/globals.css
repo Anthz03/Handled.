@@ -1,3 +1,10 @@
+/* Hallmark · checked: 2026-11-26 · genre: playful (inferred: student studio, industrial)
+ * floor: fixed 10a, 19, 30a, 34, 48, 54, 63, 64, 67, 12 (hero action on the first screen) · structural (owner-approved): prices on the home page; dropped the "Why choose us" list and the placeholder testimonials
+ * structural (owner-approved, 2026-11-26): light hero, casual copy and nav labels, featured projects in a pinned 3D phone
+ * waive 29 on the laptop shadow: a cast shadow under the deck, not a glow orb
+ * waive 67 on the sticker: a die-cut sticker is printed in capitals; the caps are the material, not a label
+ * built: the project · redesign: polish · v2.0.0 */
+/* Hallmark · dropped #sticker-ring · the sticker now repeats on a page, so each copy takes its own id */
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
 
@@ -24,6 +31,17 @@
   --color-paper: #eef1f2;   /* off-white */
   --color-sand: #d1bfa8;    /* warm sand accent */
   --color-signal: #ffb627;  /* caution yellow: the one pop color, used sparingly */
+  /* Laptop aluminium, light to dark, and its dark parts */
+  --color-alu-100: #d3d8da;
+  --color-alu-200: #c9cfd2;
+  --color-alu-300: #b3babd;
+  --color-alu-400: #aab2b6;
+  --color-alu-500: #9aa2a6;
+  --color-alu-600: #5b6266;
+  --color-well: #2a3033;
+  --color-key: #1a1f21;
+  --color-bezel: #111517;
+  --color-black: #0b0e0f;   /* shadow tone, tinted toward charcoal */
   /* Role aliases used across components */
   --color-navy: #1f2426;                                       /* primary text, dark sections */
   --color-slate: #6c7478;                                      /* secondary text */
@@ -45,10 +63,11 @@
   @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(.75); } }
 }
 
+html, body { overflow-x: clip; }
 body { background: var(--color-white); color: var(--color-navy); font-family: var(--font-sans); }
-h1, h2, h3, h4 { font-family: var(--font-display); font-stretch: 112%; letter-spacing: -0.02em; }
+h1, h2, h3, h4 { font-family: var(--font-display); font-stretch: 112%; letter-spacing: -0.02em; text-wrap: balance; overflow-wrap: break-word; min-width: 0; }
 .font-display { font-stretch: 112%; }
-::selection { background: #ffb627; color: #1f2426; }
+::selection { background: var(--color-signal); color: var(--color-ink); }
 
 .container-x { width: 100%; max-width: 1240px; margin-inline: auto; padding-inline: 1.25rem; }
 @media (min-width: 768px) { .container-x { padding-inline: 2rem; } }
@@ -57,24 +76,15 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-stretch: 112%; letter-sp
 /* Hero headline: Archivo pushed wide and heavy */
 .hero-type { font-size: clamp(2.9rem, 8.4vw, 7.4rem); line-height: .92; font-weight: 900; font-stretch: 125%; letter-spacing: -0.04em; }
 
-/* Caution tape: yellow band with striped edges */
-.tape {
-  background:
-    repeating-linear-gradient(-45deg, #1f2426 0 10px, #ffb627 10px 20px) top / 100% 6px no-repeat,
-    repeating-linear-gradient(-45deg, #1f2426 0 10px, #ffb627 10px 20px) bottom / 100% 6px no-repeat,
-    #ffb627;
-  padding-block: 6px;
-}
-
 .display-lg { font-size: clamp(2rem, 4.2vw, 3.4rem); line-height: 1.05; font-weight: 800; font-stretch: 115%; letter-spacing: -0.025em; }
 
 /* Background grid used on dark sections */
 .grid-bg {
-  background-image: linear-gradient(rgba(238,241,242,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(238,241,242,.06) 1px, transparent 1px);
+  background-image: linear-gradient(color-mix(in srgb, var(--color-paper) 6%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-paper) 6%, transparent) 1px, transparent 1px);
   background-size: 56px 56px;
 }
 .grid-bg-light {
-  background-image: linear-gradient(rgba(31,36,38,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(31,36,38,.06) 1px, transparent 1px);
+  background-image: linear-gradient(color-mix(in srgb, var(--color-ink) 6%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-ink) 6%, transparent) 1px, transparent 1px);
   background-size: 56px 56px;
 }
 
@@ -82,7 +92,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-stretch: 112%; letter-sp
 .spotlight { position: relative; isolation: isolate; }
 .spotlight::before {
   content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1; opacity: 0; transition: opacity .3s;
-  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgba(209,191,168,.35), transparent 60%);
+  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--color-sand) 35%, transparent), transparent 60%);
 }
 .spotlight:hover::before { opacity: 1; }
 

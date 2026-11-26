@@ -20,7 +20,7 @@ export default function Contact() {
   ];
   return (
     <>
-      <PageHeader eyebrow="Contact us" title="Let's talk." body="Questions, ideas, or just want to say hi? We usually reply within 1–2 business days." />
+      <PageHeader title="Let's talk." body="Questions, ideas, or just want to say hi? We usually reply within 1–2 business days." />
       <section className="container-x grid gap-12 py-20 lg:grid-cols-[1fr_1.4fr]">
         <div className="space-y-6">
           <ul className="space-y-5">
@@ -43,7 +43,7 @@ export default function Contact() {
           <div className="rounded-3xl bg-navy p-8 text-white on-dark">
             <h2 className="text-lg font-bold">Want to see your site first?</h2>
             <p className="mt-2 text-sm text-white/70">Request a free homepage preview. No commitment.</p>
-            <div className="mt-5"><Button href="/start-project" variant="light" arrow>Get my free preview</Button></div>
+            <div className="mt-5"><Button href="/start-project" variant="light">Get my free preview</Button></div>
           </div>
         </div>
         <ContactForm />

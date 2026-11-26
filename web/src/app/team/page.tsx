@@ -15,9 +15,9 @@ export const metadata: Metadata = {
 export default function Team() {
   return (
     <>
-      <PageHeader eyebrow="Meet the team" title="The People Behind the Solutions." body="Behind every successful digital solution is a team committed to understanding problems, exploring possibilities, and delivering meaningful results." />
+      <PageHeader title="The People Behind the Solutions." body="Behind every successful digital solution is a team committed to understanding problems, exploring possibilities, and delivering meaningful results." />
       <section className="container-x py-24">
-        <SectionHeading eyebrow="Co-founders" title="Two Benildeans who love technology." body="We started Handled on a spontaneous decision because we wanted to use technology to solve real-world problems." />
+        <SectionHeading title="Two Benildeans who love technology." body="We started Handled on a spontaneous decision because we wanted to use technology to solve real-world problems." />
         <Stagger className="mt-14 grid gap-6 lg:grid-cols-2">
           {founders.map((f, i) => <StaggerItem key={i}><FounderCard f={f} full /></StaggerItem>)}
         </Stagger>
@@ -29,7 +29,7 @@ export default function Team() {
             <h2 className="text-lg font-bold text-navy">Growing the team</h2>
             <p className="mt-1 text-sm text-slate">We&apos;re open to working with developers, designers, and consultants who share our goals. Interested in collaborating?</p>
           </div>
-          <a href={`mailto:${site.email}?subject=Collaboration`} className="rounded-full bg-navy px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-brand active:scale-[0.97] on-dark">Get in touch</a>
+          <a href={`mailto:${site.email}?subject=Collaboration`} className="rounded-full bg-navy px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-brand active:scale-[0.97] on-dark">Get in touch</a>
         </div>
       </section>
       <CTA />

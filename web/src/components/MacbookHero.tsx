@@ -1,168 +1,111 @@
 "use client";
-import { motion, MotionValue, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { motion, useMotionValue, useTransform } from "framer-motion";
+import dynamic from "next/dynamic";
+import { useRef } from "react";
 import { Button } from "./Button";
-import { SampleSite } from "./SampleSite";
+import { Sticker } from "./Sticker";
+import { softPin, usePinProgress } from "@/lib/usePinProgress";
 
-// Pinned hero: a CSS-3D MacBook opens, turns to face you, and scrolls a sample homepage on its screen.
-// Follows the parallax principles in the vault: state follows the scroll, soft pin, eased handover,
-// only transform/opacity per frame, still composition under reduced motion.
+// three.js loads after the page is up; the laptop draws in once it arrives.
+const LaptopScene = dynamic(() => import("./LaptopScene"), { ssr: false });
+
+// Pinned hero, one scroll story: the closed laptop under the headline opens until its screen covers the view, its sample
+// homepage scrolls to the end, then the lid closes, uncovering the next section (children), and the laptop settles,
+// closed, on the line between this section and the next. Follows the vault's parallax principles: state follows the
+// scroll, soft pin, eased handover, only transform/opacity per frame, a still and complete page under reduced motion.
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v));
-// Vertical speed fades out over E before the stage sticks and back in after it lets go.
-const softPin = (top: number, left: number, E: number) =>
-  (Math.abs(top) < E ? (top + E) ** 2 / (4 * E) - Math.max(0, top) : 0) +
-  (Math.abs(left) < E ? -((E - left) ** 2) / (4 * E) - Math.min(0, left) : 0);
-// Progress eases in and out over the arriving/leaving stretch.
-const ramp = (q: number, a: number) => {
-  const s = 1 / (1 - a);
-  return q < a ? ((q * q) / (2 * a)) * s : q > 1 - a ? 1 - ((1 - q) ** 2 / (2 * a)) * s : (q - a / 2) * s;
-};
+const smooth = (v: number) => v * v * (3 - 2 * v);
+const CLOSED_AT = 0.8; // the closed laptop sits this far down the first screen (LaptopScene's CLOSED_Y: 0.5 + 0.3)
 
-export function MacbookHero() {
+export function MacbookHero({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLElement>(null);
-  const reduce = useReducedMotion();
-  const p = useMotionValue(reduce ? 1 : 0);
-  const lift = useMotionValue(0);
-  const siteEnd = useMotionValue(0.6); // how far the sample site scrolls: 1 - screen height / site height
-  const [wide, setWide] = useState(false);
+  const stage = useRef<HTMLDivElement>(null);
+  const { p, lift, reduce, top, geo } = usePinProgress(ref, 1, stage);
+  const siteEnd = useMotionValue(0.6); // how far the sample site scrolls; LaptopScene measures it
 
-  useEffect(() => {
-    if (reduce) { p.set(1); lift.set(0); return; }
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const el = ref.current;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const E = 0.3 * vh;
-      const range = r.height - vh;
-      const span = range + 2 * E;
-      lift.set(softPin(r.top, range + r.top, E));
-      const site = el.querySelector<HTMLElement>("[data-site]");
-      if (site?.parentElement) siteEnd.set(Math.max(0, 1 - site.parentElement.offsetHeight / site.offsetHeight));
-      setWide(window.innerWidth >= 1024);
-      p.set(ramp(clamp((E - r.top) / span), Math.min(0.5, (2 * E) / span)));
-    };
-    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); cancelAnimationFrame(raf); };
-  }, [reduce, p, lift, siteEnd]);
-
-  // Timeline (p 0 → 1): intro beat, lid opens and laptop turns, screen scrolls, outro.
-  const lidAngle = useTransform(p, [0.08, 0.42], [-90, 14]);
-  const rx = useTransform(p, [0, 0.45], [-58, -14]);
-  const ry = useTransform(p, [0, 0.45], [34, 0]);
-  const scale = useTransform(p, [0, 0.45], [0.62, 1]);
-  // Starts low and to the right of the headline (clear of the text), ends centered.
-  const intro = useTransform(p, [0, 0.45], [1, 0]);
-  const x = useTransform(intro, (v) => `${v * (wide ? 20 : 0)}vw`);
-  const y = useTransform(intro, (v) => `${v * (wide ? 18 : 26)}svh`);
-  const siteY = useTransform(() => `${-clamp((p.get() - 0.48) / 0.38) * siteEnd.get() * 100}%`);
-  const glare = useTransform(p, [0.2, 0.5], [0, 1]);
-  const introOpacity = useTransform(p, [0.06, 0.2], [1, 0]);
-  const introY = useTransform(p, [0.06, 0.2], [0, -60]);
-  const outroOpacity = useTransform(p, [0.84, 0.96], [0, 1]);
-  const outroY = useTransform(p, [0.84, 0.96], [30, 0]);
+  // Timeline (p 0 → 1)
+  //   0    → 0.30  lid opens; the laptop turns to face you and grows until its screen covers the view
+  //   0.34 → 0.66  the sample site scrolls to its end
+  //   0.70 → 0.86  lid closes while the next section fades in; the laptop takes its closed tilt and size and comes to a
+  //                spot a little above where it rests (only ever moving down)
+  //   then the line between this section and the next rises to meet the closed laptop and carries it off (eased pick-up)
+  const toOpen = useTransform(p, (v) => smooth(clamp(v / 0.3)));
+  const toRest = useTransform(p, (v) => smooth(clamp((v - 0.7) / 0.16)));
+  // The glide, in screen space: once the lid has shut, the laptop holds its spot on screen while the line between this
+  // section and the next rises towards it; the line then picks it up and carries it. The pick-up is a soft minimum, so
+  // the laptop eases from still to the page's speed: one path, always upward, no dip. The scene holds still and only
+  // its canvas moves, so nothing can drift out of step.
+  const glideY = useTransform(() => {
+    const t = top.get();
+    const { E, span, range, vh, stageH } = geo.current;
+    const F = 0.3 * vh;
+    // Hold from the lid shutting, or from the pin starting to let go if that comes first
+    const from = Math.max(E - 0.86 * span, F - range);
+    if (t >= from) return 0;
+    const stageTop = Math.min(Math.max(t, 0), t + range) + lift.get(); // where the sticky stage is on screen
+    const line = stageTop + stageH;
+    const held = softPin(from, range + from, E, F) + CLOSED_AT * vh; // the laptop's screen spot when the hold starts
+    const k = 0.22 * vh; // how gradual the pick-up is
+    const h = clamp(0.5 + (0.5 * (line - held)) / k);
+    const spot = line + (held - line) * h - k * h * (1 - h); // smooth min(held, line)
+    return spot - stageTop - CLOSED_AT * vh;
+  });
+  const lid = useTransform(p, (v) => (reduce ? 1 : smooth(clamp((v - 0.06) / 0.24)) * (1 - smooth(clamp((v - 0.7) / 0.16)))));
+  const site = useTransform(p, (v) => clamp((v - 0.34) / 0.32));
+  const headOpacity = useTransform(p, [0.04, 0.16], [1, 0]);
+  const headY = useTransform(p, [0.04, 0.16], [0, -60]);
+  const headVisibility = useTransform(headOpacity, (v) => (v < 0.02 ? "hidden" : "visible"));
+  // The next section fades in as the lid closes, over the same stretch
+  const backOpacity = useTransform(p, [0.7, 0.86], [0, 1]);
   const sticker = useTransform(p, [0, 1], [-20, 300]);
-  const stickerScale = useTransform(p, [0.4, 0.5], [0, 1]);
+  const stickerScale = useTransform(p, [0.3, 0.34, 0.66, 0.7], [0, 1, 1, 0]);
+
+  const headline = (
+    <motion.div style={reduce ? undefined : { opacity: headOpacity, y: headY, visibility: headVisibility }} className={`container-x ${reduce ? "relative pt-16" : "absolute inset-x-0 top-[12svh] z-20 md:top-[14svh]"}`}>
+      <h1 className="hero-type max-w-[11ch] md:max-w-[13ch]">We build your website first.</h1>
+      <p className="mt-5 max-w-md text-lg leading-relaxed text-steel">Free homepage preview for Metro Manila businesses. Pay if you like it.</p>
+      <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <Button href="/start-project">Get my free preview</Button>
+        {!reduce && <p className="hidden text-sm text-steel sm:block">or scroll to see one</p>}
+      </div>
+    </motion.div>
+  );
+
+  if (reduce)
+    return (
+      <section ref={ref} className="relative bg-paper text-ink" aria-label="Intro">
+        {headline}
+        <div className="relative mt-6 h-[70svh]">
+          <LaptopScene still lid={lid} toOpen={toOpen} toRest={toRest} site={site} siteEnd={siteEnd} />
+        </div>
+        {children}
+      </section>
+    );
 
   return (
-    <section ref={ref} className={`relative bg-navy text-white on-dark ${reduce ? "" : "h-[340svh] md:h-[380svh]"}`} aria-label="Intro">
-      <motion.div style={{ y: lift }} className={`${reduce ? "relative py-16" : "sticky top-0 h-[100svh]"} overflow-hidden`}>
-        <div className="grid-bg absolute inset-0 [mask-image:radial-gradient(ellipse_at_50%_45%,black,transparent_72%)]" />
-        <div className="absolute left-1/2 top-1/2 h-[40rem] w-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-signal/10 blur-[120px]" />
-
-        {/* Intro beat: its own space before the laptop moves (principle 13) */}
-        <motion.div style={reduce ? undefined : { opacity: introOpacity, y: introY }} className={`container-x z-10 ${reduce ? "relative" : "absolute inset-x-0 top-[12svh] md:top-[16svh]"}`}>
-          <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 font-mono text-xs text-white/80">
-            <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-signal" /> Websites for local businesses in Metro Manila
-          </p>
-          <h1 className="hero-type mt-6 max-w-[11ch] md:max-w-[13ch]">We build your website first.</h1>
-          <p className="mt-5 max-w-md text-lg leading-relaxed text-white/70">
-            You pay only if you like it. Two Benildean students, one free homepage preview, zero pressure.
-          </p>
-          {!reduce && <p className="mt-8 font-mono text-xs text-white/50">Scroll to open it</p>}
+    // z-10: the resting laptop hangs over the top of the next section
+    <section ref={ref} className="relative z-10 bg-paper text-ink" aria-label="Intro">
+      <motion.div ref={stage} style={{ y: lift }} className="sticky top-0 min-h-[100svh]">
+        <div className="grid-bg-light absolute inset-x-0 top-0 h-[100svh] [mask-image:radial-gradient(ellipse_at_50%_45%,black,transparent_72%)]" />
+        {/* Back: the next section, faded in behind the laptop, then uncovered by the closing lid; bottom space for the laptop to settle in */}
+        <motion.div style={{ opacity: backOpacity }} className="relative flex min-h-[100svh] items-center pb-[24svh]">
+          {children}
         </motion.div>
-
-        {/* The laptop */}
-        <div className={`${reduce ? "relative mt-14 h-[calc(var(--w)*0.72)]" : "absolute inset-0"} grid place-items-center [--w:min(820px,90vw,74svh)] [perspective:1800px]`}>
-          <motion.div style={reduce ? { x: 0, y: 0 } : { x, y, scale }} className="relative h-0 w-0 [transform-style:preserve-3d] translate-y-[calc(var(--w)*0.16)]">
-            <motion.div style={{ rotateX: reduce ? -14 : rx, rotateY: reduce ? 0 : ry }} className="absolute [transform-style:preserve-3d]">
-              <Laptop lidAngle={reduce ? undefined : lidAngle} siteY={reduce ? undefined : siteY} glare={glare} />
-            </motion.div>
-            <motion.div style={reduce ? undefined : { rotate: sticker, scale: stickerScale }} className="absolute -top-[calc(var(--w)*0.62)] right-[calc(var(--w)*-0.5)] z-10 hidden sm:block">
+        {/* Front: the laptop, one screen tall; after the lid shuts it slides down as a whole (the glide) and may hang over
+            the next section */}
+        <motion.div style={{ y: glideY }} className="pointer-events-none absolute inset-x-0 top-0 h-[100svh]">
+          <div className="h-full">
+            <LaptopScene lid={lid} toOpen={toOpen} toRest={toRest} site={site} siteEnd={siteEnd} />
+            <motion.div style={{ rotate: sticker, scale: stickerScale }} className="absolute right-[7%] top-[12%] hidden sm:block">
               <Sticker />
             </motion.div>
-          </motion.div>
-        </div>
-
-        {/* Outro: the point of the scene, then the actions */}
-        <motion.div style={reduce ? undefined : { opacity: outroOpacity, y: outroY }} className={`container-x z-10 text-center ${reduce ? "relative mt-10" : "absolute inset-x-0 bottom-[6svh]"}`}>
-          <p className="mx-auto max-w-lg text-base text-white/75 md:text-lg">That&apos;s what a free preview looks like. Yours shows your business, your menu, your hours.</p>
-          <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-            <Button href="/start-project" arrow>Get my free preview</Button>
-            <Button href="/pricing" variant="outline-light">See pricing</Button>
           </div>
         </motion.div>
+        {headline}
       </motion.div>
+      {/* Scroll distance the story plays over */}
+      <div aria-hidden="true" className="h-[300svh]" />
     </section>
-  );
-}
-
-function Laptop({ lidAngle, siteY, glare }: { lidAngle?: MotionValue<number>; siteY?: MotionValue<string>; glare: MotionValue<number> }) {
-  // Units: --w is the laptop width. Deck depth 0.66w, lid height 0.64w (16:10 screen + bezel), slab 0.024w.
-  const face = "absolute [backface-visibility:hidden]";
-  return (
-    <div className="relative [transform-style:preserve-3d]">
-      {/* Deck: lies flat, front edge at z = +D/2 */}
-      <div className="absolute left-[calc(var(--w)*-0.5)] top-[calc(var(--w)*-0.66)] h-[calc(var(--w)*0.66)] w-[var(--w)] origin-bottom [transform:translateZ(calc(var(--w)*0.33))_rotateX(90deg)] rounded-[calc(var(--w)*0.025)] bg-[linear-gradient(180deg,#c9cfd2,#aab2b6)] p-[calc(var(--w)*0.05)]">
-        <div className="grid h-[58%] grid-cols-[repeat(14,1fr)] gap-[calc(var(--w)*0.004)] rounded-[calc(var(--w)*0.01)] bg-[#2a3033] p-[calc(var(--w)*0.008)]">
-          {Array.from({ length: 70 }).map((_, i) => <span key={i} className="rounded-[2px] bg-[#1a1f21]" />)}
-        </div>
-        <div className="mx-auto mt-[calc(var(--w)*0.03)] h-[30%] w-[42%] rounded-[calc(var(--w)*0.012)] bg-[#b3babd] shadow-[inset_0_0_0_1px_rgba(31,36,38,.12)]" />
-      </div>
-      {/* Slab front edge */}
-      <div className="absolute left-[calc(var(--w)*-0.5)] top-0 h-[calc(var(--w)*0.024)] w-[var(--w)] rounded-b-[calc(var(--w)*0.03)] bg-[linear-gradient(180deg,#9aa2a6,#6c7478)] [transform:translateZ(calc(var(--w)*0.33))]">
-        <div className="mx-auto h-[40%] w-[16%] rounded-b-md bg-[#5b6266]" />
-      </div>
-      {/* Shadow on the "table" */}
-      <div className="absolute left-[calc(var(--w)*-0.56)] top-[calc(var(--w)*-0.7)] h-[calc(var(--w)*0.76)] w-[calc(var(--w)*1.12)] origin-bottom [transform:translateY(calc(var(--w)*0.03))_translateZ(calc(var(--w)*0.36))_rotateX(90deg)] rounded-[50%] bg-black/45 blur-2xl" />
-
-      {/* Lid: hinged at the back edge of the deck */}
-      <motion.div
-        style={lidAngle ? { rotateX: lidAngle } : { rotateX: 14 }}
-        className="absolute left-[calc(var(--w)*-0.5)] top-[calc(var(--w)*-0.64)] h-[calc(var(--w)*0.64)] w-[var(--w)] origin-bottom [transform-style:preserve-3d] [translate:0_0_calc(var(--w)*-0.33)]"
-      >
-        {/* Screen side */}
-        <div className={`${face} inset-0 rounded-t-[calc(var(--w)*0.03)] bg-[#111517] p-[calc(var(--w)*0.018)] pb-[calc(var(--w)*0.03)] ring-1 ring-[#6c7478]/50`}>
-          <div className="relative h-full w-full overflow-hidden rounded-[calc(var(--w)*0.006)] bg-paper text-[calc(var(--w)*0.0155)]">
-            <motion.div data-site style={siteY ? { y: siteY } : undefined}><SampleSite /></motion.div>
-            <motion.div style={{ opacity: glare }} className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,.14),transparent_40%)]" />
-          </div>
-          <span className="absolute left-1/2 top-[calc(var(--w)*0.007)] h-[calc(var(--w)*0.006)] w-[calc(var(--w)*0.006)] -translate-x-1/2 rounded-full bg-[#2a3033]" />
-        </div>
-        {/* Back of the lid, lifted off the deck so it shows when closed */}
-        <div className={`${face} inset-0 grid place-items-center rounded-t-[calc(var(--w)*0.03)] bg-[linear-gradient(160deg,#d3d8da,#9aa2a6)] [transform:translateZ(calc(var(--w)*-0.01))_rotateY(180deg)]`}>
-          <span className="rotate-180 font-display text-[calc(var(--w)*0.05)] font-extrabold text-[#6c7478]/70">h.</span>
-        </div>
-      </motion.div>
-    </div>
-  );
-}
-
-function Sticker() {
-  return (
-    <svg viewBox="0 0 120 120" className="h-24 w-24 drop-shadow-xl md:h-28 md:w-28" aria-hidden="true">
-      <defs><path id="sticker-ring" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0" /></defs>
-      <circle cx="60" cy="60" r="58" fill="#ffb627" />
-      <text fill="#1f2426" fontSize="12.5" fontWeight="700" letterSpacing="2.4" style={{ fontFamily: "var(--font-mono)" }}>
-        <textPath href="#sticker-ring">FREE PREVIEW · FREE PREVIEW ·</textPath>
-      </text>
-      <text x="60" y="68" textAnchor="middle" fill="#1f2426" fontSize="26" fontWeight="800" style={{ fontFamily: "var(--font-display)" }}>₱0</text>
-    </svg>
   );
 }

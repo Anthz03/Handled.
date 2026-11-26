@@ -23,11 +23,11 @@ export const site = {
 
 export const nav = [
   { label: "Home", href: "/" },
-  { label: "About Us", href: "/about" },
-  { label: "Services", href: "/services" },
-  { label: "Our Projects", href: "/projects" },
-  { label: "Meet the Team", href: "/team" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "Insights", href: "/insights" },
-  { label: "Contact Us", href: "/contact" },
+  { label: "About", href: "/about" },
+  { label: "What we do", href: "/services" },
+  { label: "Work", href: "/projects" },
+  { label: "Team", href: "/team" },
+  { label: "Prices", href: "/pricing" },
+  { label: "Reads", href: "/insights" },
+  { label: "Say hi", href: "/contact" },
 ];
