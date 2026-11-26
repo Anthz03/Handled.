@@ -45,9 +45,9 @@ export function HeroVisual() {
         </Layer>
         <Layer y={yFront} reduce={reduce} d={0.85} className="absolute bottom-[14%] left-[4%]">
           <div className="rounded-2xl bg-white px-4 py-3 shadow-2xl shadow-navy/30">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-slate">Status</p>
+            <p className="text-xs text-slate">Status</p>
             <p className="mt-1 flex items-center gap-2 text-sm font-bold text-navy">
-              <span className="h-2 w-2 animate-pulse-dot rounded-full bg-brand" /> Deployed
+              Deployed
             </p>
           </div>
         </Layer>

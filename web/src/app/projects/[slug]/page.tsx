@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Check } from "lucide-react";
-import { Eyebrow } from "@/components/Section";
 import { Reveal, SplitWords, Stagger, StaggerItem } from "@/components/Motion";
 import { DemoBadge } from "@/components/DemoBadge";
 import { MockupPanel } from "@/components/Mockup";
@@ -35,7 +34,7 @@ export default async function ProjectDetail({ params }: Props) {
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" /> All projects
           </Link>
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <Eyebrow light>{p.category}</Eyebrow>
+            <span className="text-sm text-white/70">{p.category}</span>
             <DemoBadge dark />
           </div>
           <h1 className="display-xl mt-5 max-w-4xl"><SplitWords text={p.title} /></h1>
@@ -49,7 +48,7 @@ export default async function ProjectDetail({ params }: Props) {
             <MockupPanel type={p.mock} className="mx-auto max-w-5xl rounded-[2.5rem] bg-brand! p-8 md:p-16" />
           </div>
         </Reveal>
-        <p className="mt-4 text-center font-mono text-xs text-slate">Concept mockup</p>
+        <p className="mt-4 text-center text-sm text-slate">Concept mockup</p>
       </section>
 
       <section className="container-x grid gap-12 pb-20 lg:grid-cols-[1.4fr_1fr]">

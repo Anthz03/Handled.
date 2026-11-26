@@ -81,3 +81,18 @@
 **Verified:** the browser audit (13 pages) loads only Archivo, Instrument Sans and IBM Plex Mono, and finds no solid colors outside Stone Loft (blended tints aren't read by the script). Screenshots checked at 1440 and 390. Production build passes.
 
 **Note:** Steel (#6C7478) on off-white (#EEF1F2) is about 4.2:1 contrast, just under WCAG AA for small text. It's used for secondary text only.
+
+## 2026-11-26: Rebrand to Handled. and repositioning
+**Why:** the founders settled the business direction (see "Decisions 2026-11-26" in `PROJECT_OVERVIEW.md`): local SMEs in Metro Manila, "see it before you pay", published prices, reduced scope.
+
+**Done**
+- `site.ts`: name Handled., new tagline and description, Messenger link field, Pricing in the nav in place of Our Process.
+- Replaced "Coreform" in all page copy, metadata, and the blog author name. Logo wordmark shows "Handled." with an accent-colored period.
+- Homepage: new hero and CTAs (free preview, pricing), a 3-step "how it works" strip replacing the stats counters, and industry chips.
+- New `/pricing` page driven by `packages`, `addOns`, and `pricingTerms` in `data.ts`.
+- New `POST /api/contact` (Resend over HTTP, no new dependency) and rewritten `ContactForm` used on `/contact` and `/start-project`. `/start-project` is now the free-preview request.
+- New `MessengerButton`, hidden until a Messenger link is set.
+- CTA block defaults, nav and footer buttons updated to the free-preview offer. Footer keeps a link to Our Process; sitemap includes `/process` and `/pricing`.
+
+**Verified:** typecheck, lint, and production build pass. The endpoint returns 400 for missing fields, a bad email, or bad JSON; 200 for honeypot submissions; and 503 without Resend credentials. In the browser, the home and pricing pages render, and at 375px the free-preview form shows the direct-contact fallback when sending is unavailable. Not yet tested: a real send through Resend.
+

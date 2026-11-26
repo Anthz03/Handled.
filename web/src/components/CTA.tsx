@@ -3,9 +3,9 @@ import { Parallax, Reveal } from "./Motion";
 import { LogoMark } from "./Logo";
 
 export function CTA({
-  title = "Have an Idea? Let's Build It.",
-  body = "Tell us what your business needs. We'll help you find the right technology solution.",
-  label = "Discuss Your Project",
+  title = "See your new site before you pay.",
+  body = "Send us your business name and Facebook or Google Maps page. We'll design a free preview of your homepage.",
+  label = "Get my free preview",
 }: { title?: string; body?: string; label?: string }) {
   return (
     <section className="container-x py-24">
@@ -21,7 +21,7 @@ export function CTA({
           <h2 className="display-lg mx-auto max-w-3xl text-navy">{title}</h2>
           <p className="mx-auto mt-5 max-w-xl text-lg text-navy">{body}</p>
           <div className="mt-10">
-            <Button href="/start-project" arrow>{label}</Button>
+            <Button href="/start-project">{label}</Button>
           </div>
         </Reveal>
       </div>

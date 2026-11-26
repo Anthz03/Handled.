@@ -158,7 +158,6 @@ export function MockupPanel({ type, className = "" }: { type: Project["mock"]; c
   return (
     <div className={`relative flex items-center overflow-hidden bg-navy p-6 md:p-8 on-dark ${className}`}>
       <div className="grid-bg absolute inset-0" />
-      <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-brand/40 blur-3xl transition-transform duration-700 group-hover:scale-150" />
       <div className="relative w-full transition-transform duration-700 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]">
         <Mockup type={type} />
       </div>

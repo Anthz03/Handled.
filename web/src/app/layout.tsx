@@ -10,12 +10,13 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ScrollProgress } from "@/components/Motion";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import { site } from "@/lib/site";
 
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: `${site.name} | Website & System Development, IT Consulting Philippines`, template: `%s | ${site.name}` },
+  title: { default: `${site.name} | Websites & Booking Systems for Metro Manila Businesses`, template: `%s | ${site.name}` },
   description: site.description,
   openGraph: { siteName: site.name, type: "website", locale: "en_PH" },
 };
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded focus:bg-white focus:px-4 focus:py-2">
           Skip to content
         </a>
+        <SmoothScroll />
         <ScrollProgress />
         <Navbar />
         <main id="main">{children}</main>

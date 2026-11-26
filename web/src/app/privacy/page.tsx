@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Privacy Policy", description: `How $
 export default function Privacy() {
   return (
     <>
-      <PageHeader eyebrow="Legal" title="Privacy Policy" body="Draft. Last updated: November 2026." />
+      <PageHeader title="Privacy Policy" body="Draft. Last updated: November 2026." />
       <section className="container-x max-w-3xl! py-14 prose-body">
         <p>{site.name} respects your privacy and is committed to protecting your personal information in accordance with the Data Privacy Act of 2012 (Republic Act No. 10173).</p>
         <h2>Information we collect</h2>

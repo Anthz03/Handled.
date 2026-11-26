@@ -26,7 +26,7 @@ export function ProcessTimeline({ details, light }: { details?: string[][]; ligh
           <span className="relative z-10 grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-brand font-mono text-sm font-semibold text-on-brand shadow-lg shadow-brand/30 md:h-[72px] md:w-[72px] md:text-base">
             {p.step}
           </span>
-          <div className={`group flex-1 rounded-3xl p-6 transition-all duration-500 hover:-translate-y-1 md:p-8 ${light ? "bg-white/5 hover:bg-white/10" : "bg-soft hover:bg-white hover:shadow-xl hover:shadow-navy/5"}`}>
+          <div className={`group flex-1 rounded-3xl p-6 transition duration-500 hover:-translate-y-1 md:p-8 ${light ? "bg-white/5 hover:bg-white/10" : "bg-soft hover:bg-white hover:shadow-xl hover:shadow-navy/5"}`}>
             <h3 className={`text-xl font-extrabold md:text-2xl ${light ? "text-white" : "text-navy"}`}>{p.title}</h3>
             <p className={`mt-2 leading-relaxed ${light ? "text-white/65" : "text-slate"}`}>{p.body}</p>
             {details && (

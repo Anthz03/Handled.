@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Terms and Conditions", description: 
 export default function Terms() {
   return (
     <>
-      <PageHeader eyebrow="Legal" title="Terms and Conditions" body="Draft. Last updated: November 2026." />
+      <PageHeader title="Terms and Conditions" body="Draft. Last updated: November 2026." />
       <section className="container-x max-w-3xl! py-14 prose-body">
         <p>By using this website, you agree to these terms.</p>
         <h2>Website content</h2>

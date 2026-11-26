@@ -37,14 +37,15 @@ STARTUP/
 | `ServiceCard`, `ServiceIcon` | Service grid |
 | `FounderCard` | Founder profile (compact or `full`) |
 | `PostCard`, `PostCover` | Article cards and generated covers |
-| `ContactForm` (client) | Validates input, opens mailto |
+| `ContactForm` (client) | Contact and free-preview form; posts to `/api/contact`, shows a direct-contact fallback if sending is unavailable |
+| `MessengerButton` | Messenger link; renders nothing until `site.socials.messenger` is set |
 | `HeroVisual` (client) | Animated hero composition |
 
 ## Rendering
-All pages are static (SSG) except `/start-project`, which reads `?service=` to pre-fill the email subject.
+All pages are static (SSG) except `/start-project`, which reads `?service=` to pre-fill the message, and the `/api/contact` route.
 
 ## API routes and integrations
-None yet. Phase 2 adds a server action or API route for inquiries, Supabase, and Resend.
+`POST /api/contact` (`web/src/app/api/contact/route.ts`): validates and trims fields server-side (name, email, message required; length caps), drops honeypot submissions, then sends one plain-text email through Resend's HTTP API with `reply_to` set to the visitor. Returns 400 for invalid input, 503 when Resend isn't configured, 502 if Resend rejects the send. No database; inquiries live in the inbox.
 
 ## Security
-No secrets or env vars yet. `robots.ts` already disallows `/admin` for Phase 3.
+Resend credentials are server-only env vars, never sent to the browser. Spam protection is a hidden honeypot field; there is no rate limiting yet. `robots.ts` disallows `/admin`.

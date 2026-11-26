@@ -6,13 +6,13 @@ import { CTA } from "@/components/CTA";
 
 export const metadata: Metadata = {
   title: "Our Projects",
-  description: "Concept and demonstration projects showing the websites, systems, databases, and designs Coreform builds.",
+  description: "Concept and demonstration projects showing the websites, systems, databases, and designs Handled builds.",
 };
 
 export default function Projects() {
   return (
     <>
-      <PageHeader eyebrow="Our projects" title="What we can build for you." body="Explore our concept projects across websites, systems, databases, and design." />
+      <PageHeader title="What we can build for you." body="Explore our concept projects across websites, systems, databases, and design." />
       <section className="container-x py-20">
         <p className="mb-12 flex items-start gap-3 rounded-2xl bg-brand/10 p-5 text-sm text-navy">
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
