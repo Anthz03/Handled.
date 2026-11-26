@@ -15,7 +15,7 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: `${site.name} | Website & System Development, IT Consulting Philippines`, template: `%s | ${site.name}` },
+  title: { default: `${site.name} | Websites & Booking Systems for Metro Manila Businesses`, template: `%s | ${site.name}` },
   description: site.description,
   openGraph: { siteName: site.name, type: "website", locale: "en_PH" },
 };

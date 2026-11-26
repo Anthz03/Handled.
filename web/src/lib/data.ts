@@ -320,7 +320,7 @@ export const founders: Founder[] = [
     name: "[Founder Name]",
     role: "Co-Founder / Technical Lead",
     initials: "F1",
-    bio: "A Benildean student who loves building things with code. Leads the technical side of Coreform, from system architecture to the final deployment.",
+    bio: "A Benildean student who loves building things with code. Leads the technical side of Handled, from system architecture to the final deployment.",
     specializations: ["Software development", "System architecture", "Database design", "Technical implementation", "System integration"],
     skills: ["[Add skill]", "[Add skill]", "[Add skill]"],
     background: "Student at De La Salle-College of Saint Benilde. [Add program and relevant background]",
@@ -330,7 +330,7 @@ export const founders: Founder[] = [
     name: "[Founder Name]",
     role: "Co-Founder / Solutions Lead",
     initials: "F2",
-    bio: "A Benildean student who enjoys turning messy problems into clear plans. Leads client communication, requirements, and documentation at Coreform.",
+    bio: "A Benildean student who enjoys turning messy problems into clear plans. Leads client communication, requirements, and documentation at Handled.",
     specializations: ["IT consulting", "Business requirements analysis", "Project management", "Client communication", "Technical documentation"],
     skills: ["[Add skill]", "[Add skill]", "[Add skill]"],
     background: "Student at De La Salle-College of Saint Benilde. [Add program and relevant background]",
@@ -348,7 +348,7 @@ export type Post = {
   service: string; // related service slug
 };
 
-const author = "Coreform Team";
+const author = "Handled Team";
 export const postAuthor = author;
 
 export const posts: Post[] = [
@@ -485,3 +485,45 @@ export const getProject = (slug: string) => projects.find((p) => p.slug === slug
 export const getPost = (slug: string) => posts.find((p) => p.slug === slug);
 export const formatDate = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("en-PH", { year: "numeric", month: "long", day: "numeric" });
+
+// Pricing. "from" prices are starting points; edit freely. Final price is fixed after the free preview and a short call.
+export type Package = { name: string; price: string; unit?: string; forWho: string; includes: string[]; featured?: boolean };
+
+export const packages: Package[] = [
+  {
+    name: "Starter Page",
+    price: "₱8,000",
+    forWho: "A clean one-page site so customers can find you, see what you offer, and reach you.",
+    includes: ["One-page website (menu, services, or products)", "Hours, location map, and contact buttons", "Messenger, call, and directions links", "Mobile-friendly and fast", "Launch on a free web address"],
+  },
+  {
+    name: "Business Site",
+    price: "₱15,000",
+    forWho: "A full site that takes bookings, orders, or reservations for you.",
+    includes: ["Everything in Starter Page", "Up to 5 pages", "Booking, ordering, or reservation form", "Requests sent straight to your email", "Basic Google search setup"],
+    featured: true,
+  },
+  {
+    name: "Care Plan",
+    price: "₱1,000",
+    unit: "/month",
+    forWho: "Optional. We keep your site running and up to date so you don't have to.",
+    includes: ["Hosting and uptime checks", "Menu, price, and photo updates", "Small fixes within 1–2 business days", "Support over Messenger"],
+  },
+];
+
+export const addOns = [
+  { name: "AI Messenger assistant", body: "Answers common questions and takes orders or bookings in your Facebook Page inbox." },
+  { name: "Booking or ordering system", body: "Your own calendar or order dashboard instead of a simple form." },
+  { name: "Owner dashboard", body: "Sales, bookings, or stock in one view." },
+  { name: "Custom system", body: "Inventory, staff, or anything else your business runs on paper or spreadsheets." },
+];
+
+export const pricingTerms = [
+  "The homepage preview is free. You pay nothing if you don't like it.",
+  "50% downpayment to start the full build, 50% on launch.",
+  "Two rounds of revisions included.",
+  "Your own web address (domain) is optional, registered in your name, and billed at cost (about ₱800–₱1,500 a year).",
+  "30 days of free fixes after launch. After that, ₱500 per change, or included in the Care Plan.",
+  "Prices are starting points. We confirm a fixed price before any work you pay for.",
+];

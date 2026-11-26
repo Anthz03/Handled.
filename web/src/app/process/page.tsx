@@ -7,7 +7,7 @@ import { TimelineBar } from "@/components/TimelineBar";
 
 export const metadata: Metadata = {
   title: "Our Process",
-  description: "How Coreform delivers projects: discovery, planning, design and development, testing, and deployment.",
+  description: "How Handled delivers projects: discovery, planning, design and development, testing, and deployment.",
 };
 
 const details = [

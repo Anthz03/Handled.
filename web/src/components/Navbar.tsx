@@ -53,7 +53,7 @@ export function Navbar() {
             href="/start-project"
             className="group hidden items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-on-brand transition-all hover:bg-navy hover:shadow-lg hover:shadow-brand/30 active:scale-95 sm:inline-flex"
           >
-            <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-white" /> START A PROJECT
+            <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-white" /> FREE PREVIEW
           </Link>
           <button
             className={`grid h-11 w-11 place-items-center rounded-full border transition-colors xl:hidden ${dark ? "border-white/20 text-white" : "border-slate/20 text-navy"}`}
@@ -86,7 +86,7 @@ export function Navbar() {
                 </motion.div>
               ))}
               <Link href="/start-project" className="mt-4 rounded-full bg-brand px-4 py-4 text-center text-base font-semibold text-on-brand">
-                START A PROJECT
+                FREE PREVIEW
               </Link>
             </div>
           </motion.nav>

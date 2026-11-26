@@ -6,7 +6,7 @@ import { Parallax, Reveal, Stagger, StaggerItem } from "@/components/Motion";
 
 export const metadata: Metadata = {
   title: "About Us",
-  description: "Coreform Digital Solutions was started by two Benildean students who love technology and want to build solutions for real-world problems.",
+  description: "Handled was started by two Benildean students who love technology and want to build solutions for real-world problems.",
 };
 
 export default function About() {
@@ -18,13 +18,13 @@ export default function About() {
         <div className="lg:sticky lg:top-32 lg:self-start"><SectionHeading eyebrow="Our story" title="It started on a whim." /></div>
         <Reveal className="space-y-6 text-xl leading-relaxed text-navy">
           <p>
-            Coreform began with two students from De La Salle-College of Saint Benilde and one spontaneous decision. We both loved technology, and we kept noticing the same thing around us: small businesses, organizations, and people with good ideas who were held back by manual processes, scattered records, or no online presence at all.
+            Handled began with two students from De La Salle-College of Saint Benilde and one spontaneous decision. We both loved technology, and we kept noticing the same thing around us: small businesses, organizations, and people with good ideas who were held back by manual processes, scattered records, or no online presence at all.
           </p>
           <p>
             So one day we stopped just talking about it and decided to start a company. No big plan, just a shared belief that technology should solve real problems, and that we could help.
           </p>
           <p>
-            Today Coreform is how we put that belief to work: designing websites, building systems, structuring databases, and giving honest technology advice to clients who need practical solutions.
+            Today Handled is how we put that belief to work: designing websites, building systems, structuring databases, and giving honest technology advice to clients who need practical solutions.
           </p>
         </Reveal>
       </section>

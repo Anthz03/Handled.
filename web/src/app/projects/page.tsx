@@ -6,7 +6,7 @@ import { CTA } from "@/components/CTA";
 
 export const metadata: Metadata = {
   title: "Our Projects",
-  description: "Concept and demonstration projects showing the websites, systems, databases, and designs Coreform builds.",
+  description: "Concept and demonstration projects showing the websites, systems, databases, and designs Handled builds.",
 };
 
 export default function Projects() {

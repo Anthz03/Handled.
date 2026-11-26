@@ -9,7 +9,7 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Meet the Team",
-  description: "Meet the two Benildean co-founders behind Coreform Digital Solutions.",
+  description: "Meet the two Benildean co-founders behind Handled.",
 };
 
 export default function Team() {
@@ -17,7 +17,7 @@ export default function Team() {
     <>
       <PageHeader eyebrow="Meet the team" title="The People Behind the Solutions." body="Behind every successful digital solution is a team committed to understanding problems, exploring possibilities, and delivering meaningful results." />
       <section className="container-x py-24">
-        <SectionHeading eyebrow="Co-founders" title="Two Benildeans who love technology." body="We started Coreform on a spontaneous decision because we wanted to use technology to solve real-world problems." />
+        <SectionHeading eyebrow="Co-founders" title="Two Benildeans who love technology." body="We started Handled on a spontaneous decision because we wanted to use technology to solve real-world problems." />
         <Stagger className="mt-14 grid gap-6 lg:grid-cols-2">
           {founders.map((f, i) => <StaggerItem key={i}><FounderCard f={f} full /></StaggerItem>)}
         </Stagger>

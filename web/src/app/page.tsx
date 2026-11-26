@@ -9,16 +9,16 @@ import { FounderCard } from "@/components/FounderCard";
 import { PostCard } from "@/components/PostCard";
 import { Marquee } from "@/components/Marquee";
 import { ProcessTimeline } from "@/components/ProcessTimeline";
-import { CountUp, Parallax, Reveal, SplitWords, Stagger, StaggerItem } from "@/components/Motion";
-import { founders, posts, process, projects, services, whyUs } from "@/lib/data";
+import { Parallax, Reveal, SplitWords, Stagger, StaggerItem } from "@/components/Motion";
+import { founders, posts, projects, services, whyUs } from "@/lib/data";
 
 export default function Home() {
-  const facts = [
-    { n: services.length, label: "Core services" },
-    { n: projects.length, label: "Concept projects" },
-    { n: process.length, label: "Step delivery process" },
-    { n: founders.length, label: "Benildean founders" },
+  const steps = [
+    { title: "We design a free preview", body: "Send us your business name and your Facebook or Google Maps page. We mock up your homepage at no cost." },
+    { title: "You decide", body: "Like it? We agree on a fixed price and build the rest. Don't like it? You owe us nothing." },
+    { title: "We launch and look after it", body: "Your site goes live, and we're one Messenger message away for updates and fixes." },
   ];
+  const industries = ["Cafés", "Restaurants", "Barbershops", "Salons", "Clinics", "Studios", "Local shops"];
 
   return (
     <>
@@ -30,19 +30,19 @@ export default function Home() {
           <div>
             <Reveal y={12}>
               <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-white/80">
-                <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-brand" /> Technology consulting<span className="hidden sm:inline"> · Manila, PH</span>
+                <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-brand" /> Websites for local businesses<span className="hidden sm:inline"> · Metro Manila</span>
               </p>
             </Reveal>
             <h1 className="mt-7 text-[clamp(2.3rem,4.3vw,4rem)] font-extrabold leading-[1.04] tracking-[-0.025em]">
-              <SplitWords text="Your Ideas. Our Technology. Real Solutions." accent={["Our", "Technology."]} delay={0.1} />
+              <SplitWords text="See your new website before you pay." accent={["before", "you", "pay."]} delay={0.1} />
             </h1>
             <Reveal delay={0.55}>
               <p className="mt-7 max-w-xl text-lg leading-relaxed text-white/70">
-                We help individuals, startups, and businesses transform their ideas into practical digital solutions through website development, custom systems, database engineering, and technology consulting.
+                We design a free preview of your site first. Like it? We build it, launch it, and look after it. Websites, booking, and ordering for cafés, restaurants, barbershops, salons, clinics, and other local businesses.
               </p>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                <Button href="/start-project" arrow>Start a Project</Button>
-                <Button href="/services" variant="outline-light">Explore Our Services</Button>
+                <Button href="/start-project" arrow>Get my free preview</Button>
+                <Button href="/pricing" variant="outline-light">See pricing</Button>
               </div>
             </Reveal>
           </div>
@@ -52,25 +52,33 @@ export default function Home() {
 
       <Marquee items={services.map((s) => s.title)} />
 
-      {/* B. Intro + honest numbers */}
+      {/* B. Intro + how "see it before you pay" works */}
       <section className="container-x py-28">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.15fr] lg:items-end">
           <SectionHeading eyebrow="Who we are" title="Technology That Works for Your Business." />
           <Reveal delay={0.1}>
             <p className="text-xl leading-relaxed text-navy">
-              Coreform was started by two Benildean students who love technology and wanted to use it to solve real problems. We listen first, understand how your business works, then recommend and build the technology that actually fits.
+              Handled was started by two Benildean students who love building things. You run your business; we handle the website, the bookings, and the tech behind them, at a fixed price you see upfront.
             </p>
             <div className="mt-8"><Button href="/about" variant="secondary" arrow>More about us</Button></div>
           </Reveal>
         </div>
-        <Stagger className="mt-20 grid grid-cols-2 gap-px overflow-hidden rounded-3xl bg-slate/15 lg:grid-cols-4">
-          {facts.map((f) => (
-            <StaggerItem key={f.label} className="bg-white p-8 md:p-10">
-              <CountUp to={f.n} className="font-display text-6xl font-extrabold tracking-tight text-brand md:text-7xl" />
-              <p className="mt-3 font-mono text-xs uppercase tracking-widest text-slate">{f.label}</p>
+        <Stagger as="ol" className="mt-20 grid gap-px overflow-hidden rounded-3xl bg-slate/15 md:grid-cols-3">
+          {steps.map((st, i) => (
+            <StaggerItem as="li" key={st.title} className="bg-white p-8 md:p-10">
+              <span className="font-display text-5xl font-extrabold tracking-tight text-brand">0{i + 1}</span>
+              <h3 className="mt-4 text-xl font-extrabold text-navy">{st.title}</h3>
+              <p className="mt-2 leading-relaxed text-slate">{st.body}</p>
             </StaggerItem>
           ))}
         </Stagger>
+        <Reveal>
+          <p className="mt-10 font-mono text-xs uppercase tracking-widest text-slate">Built for</p>
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {industries.map((x) => <li key={x} className="rounded-full bg-soft px-4 py-2 text-sm font-medium text-navy">{x}</li>)}
+          </ul>
+          <p className="mt-4 text-sm text-slate">Don&apos;t see your business? If you serve local customers, we can help.</p>
+        </Reveal>
       </section>
 
       {/* C. Services */}

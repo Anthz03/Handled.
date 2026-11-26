@@ -2,13 +2,13 @@
 // Items marked [PLACEHOLDER] must be replaced with real details before launch.
 
 export const site = {
-  name: "Coreform Digital Solutions",
-  shortName: "Coreform",
-  tagline: "Your Ideas. Our Technology. Real Solutions.",
-  altTagline: "Technology Made Practical. Solutions Made Purposeful.",
+  name: "Handled.",
+  shortName: "Handled",
+  tagline: "See your new website before you pay.",
+  altTagline: "We build it. You run your business.",
   description:
-    "Coreform Digital Solutions is a technology consulting and development startup that helps individuals, entrepreneurs, startups, and businesses turn ideas and operational challenges into practical digital solutions.",
-  url: "https://example.com", // [PLACEHOLDER] production domain
+    "Handled. builds websites, booking and ordering systems, and simple automations for local businesses in Metro Manila. We design a free preview of your site first, so you see it before you pay.",
+  url: "https://handled.vercel.app", // [PLACEHOLDER] set to the real Vercel address once deployed
   email: "hello@example.com", // [PLACEHOLDER]
   phone: "+63 900 000 0000", // [PLACEHOLDER]
   location: "Manila, Philippines", // [PLACEHOLDER] adjust as needed
@@ -17,6 +17,7 @@ export const site = {
     facebook: "#", // [PLACEHOLDER]
     linkedin: "#", // [PLACEHOLDER]
     instagram: "#", // [PLACEHOLDER]
+    messenger: "", // [PLACEHOLDER] e.g. "https://m.me/yourpage". The Messenger button stays hidden while this is empty.
   },
 };
 
@@ -26,7 +27,7 @@ export const nav = [
   { label: "Services", href: "/services" },
   { label: "Our Projects", href: "/projects" },
   { label: "Meet the Team", href: "/team" },
-  { label: "Our Process", href: "/process" },
+  { label: "Pricing", href: "/pricing" },
   { label: "Insights", href: "/insights" },
   { label: "Contact Us", href: "/contact" },
 ];

@@ -16,12 +16,13 @@ export function LogoMark({ className = "h-8 w-8", accent = "#6C7478" }: { classN
 }
 
 export function Logo({ light = false }: { light?: boolean }) {
+  const accent = light ? "#D1BFA8" : "#6C7478";
   return (
     <Link href="/" className={`flex items-center gap-2.5 ${light ? "text-white" : "text-navy"}`} aria-label={`${site.name} home`}>
-      <LogoMark accent={light ? "#D1BFA8" : "#6C7478"} />
+      <LogoMark accent={accent} />
       <span className="font-display text-[17px] font-extrabold tracking-tight">
         {site.shortName}
-        <span className="font-medium opacity-60"> Digital</span>
+        <span style={{ color: accent }}>.</span>
       </span>
     </Link>
   );

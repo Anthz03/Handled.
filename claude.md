@@ -1,3 +1,5 @@
+> **Update 2026-11-26:** the business decisions in `docs/PROJECT_OVERVIEW.md` ("Decisions 2026-11-26") replace this brief where they conflict: the name is **Handled.**, the target is Metro Manila local SMEs, the offer is "see it before you pay" with published starting prices, and Phases 2-4 are reduced to a simple contact form. Read that section before following the brief below.
+
 # MASTER PROMPT: BUILD A COMPLETE TECHNOLOGY CONSULTING & DIGITAL SOLUTIONS COMPANY WEBSITE
 
 Act as a Senior UI/UX Designer, Brand Strategist, Full-Stack Developer, Software Architect, Database Engineer, and Digital Marketing Consultant.

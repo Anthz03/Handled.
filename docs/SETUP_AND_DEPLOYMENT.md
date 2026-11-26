@@ -14,8 +14,13 @@ npm run lint
 ```
 
 ## Environment variables
-None needed for Phase 1. Phase 2 will add (names only):
-`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (server only), `RESEND_API_KEY`, `INQUIRY_NOTIFY_EMAIL`, `NEXT_PUBLIC_SITE_URL`.
+Server only. Put them in `web/.env.local` locally and in Vercel project settings for production. The site runs without them; the form then asks visitors to email directly.
+
+| Name | Purpose |
+|---|---|
+| `RESEND_API_KEY` | Resend API key for sending inquiry emails |
+| `CONTACT_TO_EMAIL` | Where inquiries are delivered (the founders' shared inbox) |
+| `CONTACT_FROM_EMAIL` | Optional sender, e.g. `Handled <hello@yourdomain>`. Defaults to Resend's test sender `onboarding@resend.dev`, which only delivers to the Resend account owner's address until a domain is verified. |
 
 ## Deployment (Vercel)
 1. Push the repo to GitHub.
