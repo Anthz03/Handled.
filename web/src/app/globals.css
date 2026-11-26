@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
 /* ============================================================
    DESIGN SYSTEM: Monochrome Industrial, palette "Stone Loft" (claude.md §2)
@@ -22,6 +23,7 @@
   --color-mist: #b8bfc2;    /* light steel */
   --color-paper: #eef1f2;   /* off-white */
   --color-sand: #d1bfa8;    /* warm sand accent */
+  --color-signal: #ffb627;  /* caution yellow: the one pop color, used sparingly */
   /* Role aliases used across components */
   --color-navy: #1f2426;                                       /* primary text, dark sections */
   --color-slate: #6c7478;                                      /* secondary text */
@@ -43,16 +45,27 @@
   @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(.75); } }
 }
 
-html { scroll-behavior: smooth; }
 body { background: var(--color-white); color: var(--color-navy); font-family: var(--font-sans); }
 h1, h2, h3, h4 { font-family: var(--font-display); font-stretch: 112%; letter-spacing: -0.02em; }
 .font-display { font-stretch: 112%; }
-::selection { background: #d1bfa8; color: #1f2426; }
+::selection { background: #ffb627; color: #1f2426; }
 
 .container-x { width: 100%; max-width: 1240px; margin-inline: auto; padding-inline: 1.25rem; }
 @media (min-width: 768px) { .container-x { padding-inline: 2rem; } }
 
 .display-xl { font-size: clamp(2.5rem, 6vw, 5.2rem); line-height: 1; font-weight: 800; font-stretch: 118%; letter-spacing: -0.03em; }
+/* Hero headline: Archivo pushed wide and heavy */
+.hero-type { font-size: clamp(2.9rem, 8.4vw, 7.4rem); line-height: .92; font-weight: 900; font-stretch: 125%; letter-spacing: -0.04em; }
+
+/* Caution tape: yellow band with striped edges */
+.tape {
+  background:
+    repeating-linear-gradient(-45deg, #1f2426 0 10px, #ffb627 10px 20px) top / 100% 6px no-repeat,
+    repeating-linear-gradient(-45deg, #1f2426 0 10px, #ffb627 10px 20px) bottom / 100% 6px no-repeat,
+    #ffb627;
+  padding-block: 6px;
+}
+
 .display-lg { font-size: clamp(2rem, 4.2vw, 3.4rem); line-height: 1.05; font-weight: 800; font-stretch: 115%; letter-spacing: -0.025em; }
 
 /* Background grid used on dark sections */

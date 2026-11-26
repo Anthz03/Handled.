@@ -2,8 +2,8 @@ import { SplitWords, Reveal } from "./Motion";
 
 export function Eyebrow({ children, light }: { children: React.ReactNode; light?: boolean }) {
   return (
-    <p className={`inline-flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.18em] ${light ? "text-white/60" : "text-brand"}`}>
-      <span className="h-px w-6 bg-brand" /> {children}
+    <p className={`inline-flex items-center gap-2 font-mono text-sm font-medium ${light ? "text-white/70" : "text-steel"}`}>
+      <span className="h-2 w-2 rotate-45 bg-signal" /> {children}
     </p>
   );
 }

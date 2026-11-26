@@ -10,7 +10,7 @@ type Props = {
 };
 
 const styles = {
-  primary: "bg-brand text-on-brand hover:bg-brand/85 hover:shadow-lg hover:shadow-navy/20",
+  primary: "bg-signal text-ink hover:-rotate-1 hover:shadow-[4px_4px_0_#1f2426] hover:-translate-y-0.5",
   secondary: "border border-navy/15 bg-white text-navy hover:border-navy hover:bg-navy hover:text-white",
   ghost: "text-brand hover:text-navy px-0!",
   light: "bg-white text-navy hover:bg-sand hover:text-navy",

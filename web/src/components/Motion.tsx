@@ -91,7 +91,7 @@ export function Parallax({ children, speed = 0.2, className }: { children: React
 export function ScrollProgress() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
-  return <motion.div style={{ scaleX }} className="fixed inset-x-0 top-0 z-[70] h-[3px] origin-left bg-sand" aria-hidden="true" />;
+  return <motion.div style={{ scaleX }} className="fixed inset-x-0 top-0 z-[70] h-[3px] origin-left bg-signal" aria-hidden="true" />;
 }
 
 /** Counts up to a number when visible. */
