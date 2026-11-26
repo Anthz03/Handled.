@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN SYSTEM: Monochrome Industrial, palette "Stone Loft" (claude.md §2)
+     #1F2426 charcoal · #6C7478 steel · #B8BFC2 light steel · #EEF1F2 off-white · #D1BFA8 sand
+   Tailwind's default colors and fonts are removed, so nothing else can be used.
+   Component classes keep their role names (navy/slate/white/soft/brand),
+   mapped to Stone Loft values below.
+   ============================================================ */
+:root {
+  /* Accent: charcoal on light surfaces, sand on dark (.on-dark) surfaces */
+  --accent: #1f2426;
+  --on-accent: #eef1f2;
+}
+@utility on-dark { --accent: #d1bfa8; --on-accent: #1f2426; }
+
+@theme inline {
+  --color-*: initial;
+  /* Stone Loft (exact values) */
+  --color-ink: #1f2426;     /* charcoal */
+  --color-steel: #6c7478;   /* steel */
+  --color-mist: #b8bfc2;    /* light steel */
+  --color-paper: #eef1f2;   /* off-white */
+  --color-sand: #d1bfa8;    /* warm sand accent */
+  /* Role aliases used across components */
+  --color-navy: #1f2426;                                       /* primary text, dark sections */
+  --color-slate: #6c7478;                                      /* secondary text */
+  --color-white: #eef1f2;                                      /* page ground, text on dark */
+  --color-soft: color-mix(in srgb, #b8bfc2 38%, #eef1f2);      /* light-steel surface */
+  --color-brand: var(--accent);                                /* accent (context-aware) */
+  --color-on-brand: var(--on-accent);                          /* text on accent */
+
+  --font-*: initial;
+  --font-display: "Archivo Variable", "Archivo", ui-sans-serif, sans-serif;               /* Headings */
+  --font-sans: "Instrument Sans Variable", "Instrument Sans", ui-sans-serif, sans-serif;  /* Body */
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;                                 /* Technical labels */
+}
+
+@theme {
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-pulse-dot: pulse-dot 2s ease-in-out infinite;
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(.75); } }
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--color-white); color: var(--color-navy); font-family: var(--font-sans); }
+h1, h2, h3, h4 { font-family: var(--font-display); font-stretch: 112%; letter-spacing: -0.02em; }
+.font-display { font-stretch: 112%; }
+::selection { background: #d1bfa8; color: #1f2426; }
+
+.container-x { width: 100%; max-width: 1240px; margin-inline: auto; padding-inline: 1.25rem; }
+@media (min-width: 768px) { .container-x { padding-inline: 2rem; } }
+
+.display-xl { font-size: clamp(2.5rem, 6vw, 5.2rem); line-height: 1; font-weight: 800; font-stretch: 118%; letter-spacing: -0.03em; }
+.display-lg { font-size: clamp(2rem, 4.2vw, 3.4rem); line-height: 1.05; font-weight: 800; font-stretch: 115%; letter-spacing: -0.025em; }
+
+/* Background grid used on dark sections */
+.grid-bg {
+  background-image: linear-gradient(rgba(238,241,242,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(238,241,242,.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+.grid-bg-light {
+  background-image: linear-gradient(rgba(31,36,38,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(31,36,38,.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Cursor spotlight for cards (vars set by Spotlight component) */
+.spotlight { position: relative; isolation: isolate; }
+.spotlight::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1; opacity: 0; transition: opacity .3s;
+  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgba(209,191,168,.35), transparent 60%);
+}
+.spotlight:hover::before { opacity: 1; }
+
+.prose-body p { margin-bottom: 1.1rem; line-height: 1.75; color: var(--color-navy); }
+.prose-body h2 { font-size: 1.4rem; font-weight: 800; margin: 2rem 0 .75rem; color: var(--color-navy); }
+.prose-body ul { list-style: disc; padding-left: 1.25rem; margin-bottom: 1.1rem; color: var(--color-navy); }
+.prose-body li { margin-bottom: .35rem; }
+.prose-body li::marker { color: var(--color-brand); }
+
+:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-marquee, .animate-pulse-dot { animation: none; }
+}

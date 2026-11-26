@@ -1,0 +1,37 @@
+import { SplitWords, Reveal } from "./Motion";
+
+export function Eyebrow({ children, light }: { children: React.ReactNode; light?: boolean }) {
+  return (
+    <p className={`inline-flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.18em] ${light ? "text-white/60" : "text-brand"}`}>
+      <span className="h-px w-6 bg-brand" /> {children}
+    </p>
+  );
+}
+
+export function SectionHeading({ eyebrow, title, body, center, light }: { eyebrow?: string; title: string; body?: string; center?: boolean; light?: boolean }) {
+  return (
+    <Reveal className={`max-w-2xl ${center ? "mx-auto text-center" : ""}`}>
+      {eyebrow && <Eyebrow light={light}>{eyebrow}</Eyebrow>}
+      <h2 className={`display-lg mt-4 ${light ? "text-white" : "text-navy"}`}>{title}</h2>
+      {body && <p className={`mt-5 text-lg leading-relaxed ${light ? "text-white/70" : "text-slate"}`}>{body}</p>}
+    </Reveal>
+  );
+}
+
+export function PageHeader({ eyebrow, title, body }: { eyebrow: string; title: string; body?: string }) {
+  return (
+    <section className="relative overflow-hidden bg-navy text-white on-dark">
+      <div className="grid-bg absolute inset-0 [mask-image:radial-gradient(ellipse_at_70%_0%,black,transparent_70%)]" />
+      <div className="absolute -right-32 -top-40 h-[28rem] w-[28rem] rounded-full bg-brand/30 blur-[120px]" />
+      <div className="container-x relative pb-20 pt-20 md:pb-28 md:pt-28">
+        <Eyebrow light>{eyebrow}</Eyebrow>
+        <h1 className="display-xl mt-5 max-w-4xl"><SplitWords text={title} /></h1>
+        {body && (
+          <Reveal delay={0.35}>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/70">{body}</p>
+          </Reveal>
+        )}
+      </div>
+    </section>
+  );
+}
